@@ -6,6 +6,9 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended: true}));
 
 //Slack token authentication middleware
+app.get('/',function (req, res){
+  res.json({"message":"OK"})
+})
 app.use(function (req, res, next) {
   if (req.body.token == verificationToken){
     console.log(JSON.stringify(req.body));
@@ -16,7 +19,6 @@ app.use(function (req, res, next) {
     console.log('Received token: '+req.body.token);
   }
 });
-
 app.post('/secret', function (req, res) {
   res.json({
     "text": "New comic book alert!",
