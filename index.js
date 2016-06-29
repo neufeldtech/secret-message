@@ -9,9 +9,10 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.get('/',function (req, res){
   res.json({"message":"OK"})
 })
+
 app.use(function (req, res, next) {
+  console.log(JSON.stringify(req.body));
   if (req.body.token == verificationToken){
-    console.log(JSON.stringify(req.body));
     next();
   } else {
     console.log('Failed token verification.');
@@ -19,7 +20,9 @@ app.use(function (req, res, next) {
     console.log('Received token: '+req.body.token);
   }
 });
+
 app.post('/secret', function (req, res) {
+  if (req.body.)
   res.json({
     "text": "New comic book alert!",
     "attachments": [
