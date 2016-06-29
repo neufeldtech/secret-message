@@ -22,7 +22,6 @@ app.use(function (req, res, next) {
 });
 
 app.post('/secret', function (req, res) {
-  if (req.body.)
   res.json({
     "text": "New comic book alert!",
     "attachments": [
