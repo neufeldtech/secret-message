@@ -20,22 +20,9 @@ passport.use(new SlackStrategy({
     skipUserProfile: true
     },
   function(accessToken, refreshToken, profile, done) {
-    // User.findOrCreate({ SlackId: profile.id }, function (err, user) {
-    //   return done(err, user);
-    // });
     done(null,'foobar')
   }
 ));
-
-// passport.use(new SlackStrategy(
-//   {
-//     clientID: clientID,
-//     clientSecret: clientSecret,
-//     callbackURL: callbackURL,
-//     scope: 'commands chat:write:bot',
-//     skipUserProfile: true
-//     })
-//   );
 
 app.get('/auth/slack', passport.authorize('slack'));
 
@@ -49,10 +36,10 @@ app.get('/',function (req, res){
 })
 function sendSecret(responseUrl, username, text){
   var message = {
-    "fallback": "Please visit http://secretmessage.neufeldtech.com",
     "response_type":"in_channel",
     "attachments": [
       {
+        "fallback": "Please visit http://secretmessage.neufeldtech.com",
         "title": username + " sent a secret message:",
         "callback_id": "readMessage",
         "color": "#3AA3E3",
