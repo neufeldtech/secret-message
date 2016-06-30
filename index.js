@@ -34,10 +34,10 @@ app.post('/secret', function (req, res) {
   var body = req.body
   if (body.token == verificationToken){
     res.json({
-      "text": body.user_name + "Sent a secret message",
+      "response_type":"in_channel",
       "attachments": [
         {
-          "title": "Would you recommend it to customers?",
+          "title": body.user_name + " sent a secret message:",
           "callback_id": "readMessage",
           "color": "#3AA3E3",
           "attachment_type": "default",
