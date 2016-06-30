@@ -19,7 +19,7 @@ passport.use(new SlackStrategy({
         skipUserProfile: true
     }, ()=>{}));
 
-app.get('/auth/slack', passport.authenticate('slack'));
+app.get('/auth/slack', passport.authorize('slack'));
 
 app.get('/auth/slack/callback', function(req, res) {
     res.redirect('https://my.slack.com');
