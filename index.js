@@ -11,17 +11,35 @@ var passport = require('passport');
 var SlackStrategy = require('passport-slack').Strategy;
 
 app.use(bodyParser.urlencoded({extended: true}));
+
 passport.use(new SlackStrategy({
-        clientID: clientID,
-        clientSecret: clientSecret,
-        callbackURL: callbackURL,
-        scope: 'commands chat:write:bot',
-        skipUserProfile: true
-    }, ()=>{}));
+    clientID: clientID,
+    clientSecret: clientSecret,
+    callbackURL: callbackURL,
+    scope: 'commands chat:write:bot',
+    skipUserProfile: true
+    },
+  function(accessToken, refreshToken, profile, done) {
+    // User.findOrCreate({ SlackId: profile.id }, function (err, user) {
+    //   return done(err, user);
+    // });
+    done(null,'foobar')
+  }
+));
+
+// passport.use(new SlackStrategy(
+//   {
+//     clientID: clientID,
+//     clientSecret: clientSecret,
+//     callbackURL: callbackURL,
+//     scope: 'commands chat:write:bot',
+//     skipUserProfile: true
+//     })
+//   );
 
 app.get('/auth/slack', passport.authorize('slack'));
 
-app.get('/auth/slack/callback', function(req, res) {
+app.get('/auth/slack/callback', passport.authorize('slack', {successRedirect: 'https://my.slack.com', failureRedirect: '/login'}), function(req, res) {
     res.redirect('https://my.slack.com');
   });
 
@@ -31,6 +49,7 @@ app.get('/',function (req, res){
 })
 function sendSecret(responseUrl, username, text){
   var message = {
+    "fallback": "Please visit http://secretmessage.neufeldtech.com",
     "response_type":"in_channel",
     "attachments": [
       {
