@@ -5,7 +5,8 @@
     "body-parser": "^1.15.2",
     "express": "^3.0.6",
     "passport": "^0.3.2",
-    "passport-slack": "0.0.6"
+    "passport-slack": "0.0.6",
+    "request": "^2.72.0"
   },
   "engines": {
     "node": "6.2.x",
