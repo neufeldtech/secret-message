@@ -63,9 +63,10 @@ function sendSecret(responseUrl, username, text){
       body: message
     }
   , function (error, response, body) {
-      if(response.statusCode == 200){
+      if(!error && response.statusCode == 200){
         return
       } else {
+        console.log(error)
         console.log('error: '+ response.statusCode)
         console.log(body)
       }
@@ -78,7 +79,7 @@ app.post('/secret', function (req, res) {
   var body = req.body
   if (body.token == verificationToken){
     res.end(null,function(err){
-      sendSecret(body.responseUrl, body.user_name, body.text);
+      sendSecret(body.response_url, body.user_name, body.text);
     });
   } else {
     console.log('Failed token verification.');
