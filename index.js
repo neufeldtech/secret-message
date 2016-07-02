@@ -9,7 +9,7 @@ var request = require('request');
 var bodyParser = require('body-parser');
 var passport = require('passport');
 var SlackStrategy = require('passport-slack').Strategy;
-
+require('./lib.js')();
 app.use(bodyParser.urlencoded({extended: true}));
 
 passport.use(new SlackStrategy({
@@ -34,54 +34,8 @@ app.get('/auth/slack/callback', passport.authorize('slack', {successRedirect: 'h
 app.get('/',function (req, res){
   res.json({"message":"OK"})
 })
-function sendSecret(responseUrl, username, text){
-  var message = {
-    "response_type":"in_channel",
-    "attachments": [
-      {
-        "fallback": "Please visit http://secretmessage.neufeldtech.com",
-        "title": username + " sent a secret message:",
-        "callback_id": "readMessage",
-        "color": "#3AA3E3",
-        "attachment_type": "default",
-        "actions": [
-          {
-            "name": "readMessage",
-            "text": "View message",
-            "type": "button",
-            "value": "readMessage",
-            "confirm": {
-              "title": "This message will self destruct after reading!",
-              "text": text,
-              "ok_text":"I have read the message!",
-              "dismiss_text":"Cancel"
-            }
-          }
-        ]
-      }
-    ]
-  }
-  request(
-    {
-      method: 'post',
-      uri: responseUrl,
-      json: true,
-      body: message
-    }
-  , function (error, response, body) {
-      if(!error && response.statusCode == 200){
-        return
-      } else {
-        console.log(error)
-        console.log('error: '+ response.statusCode)
-        console.log(body)
-      }
-    }
-  );
-}
 
 app.post('/secret', function (req, res) {
-  console.log(req)
   var body = req.body
   if (body.token == verificationToken){
     res.end(null,function(err){
@@ -96,9 +50,11 @@ app.post('/secret', function (req, res) {
 });
 
 app.post('/update', function (req, res) {
-  console.log(JSON.stringify(req.body));
-
+  console.log(JSON.stringify(req.body.payload));
+  var payload = safelyParseJson(req.body.payload);
+  console.log(payload);
 });
 app.listen(process.env.PORT, function () {
   console.log('Example app listening');
+  // console.log(safelyParseJson('{"payload":"{\"actions\":[{\"name\":\"readMessage\",\"value\":\"readMessage\"}],\"callback_id\":\"readMessage\",\"team\":{\"id\":\"T0BCJDZ8Q\",\"domain\":\"neufeldtech\"},\"channel\":{\"id\":\"C0BCEGD6X\",\"name\":\"general\"},\"user\":{\"id\":\"U0BCH4N2K\",\"name\":\"jordan.neufeld\"},\"action_ts\":\"1467468185.125008\",\"message_ts\":\"1467468175.000005\",\"attachment_id\":\"1\",\"token\":\"XiLexN3vvMIE5dXD8NlEM0Kn\",\"original_message\":{\"text\":\"\",\"bot_id\":\"B1NBWFTS6\",\"attachments\":[{\"callback_id\":\"readMessage\",\"fallback\":\"Please visit <http:\\/\\/secretmessage.neufeldtech.com>\",\"title\":\"jordan.neufeld sent a secret message:\",\"id\":1,\"color\":\"3AA3E3\",\"actions\":[{\"id\":\"1\",\"name\":\"readMessage\",\"text\":\"View message\",\"type\":\"button\",\"value\":\"readMessage\",\"style\":\"\",\"confirm\":{\"text\":\"yolo\",\"title\":\"This message will self destruct after reading!\",\"ok_text\":\"I have read the message!\",\"dismiss_text\":\"Cancel\"}}]}],\"type\":\"message\",\"subtype\":\"bot_message\",\"ts\":\"1467468175.000005\"},\"response_url\":\"https:\\/\\/hooks.slack.com\\/actions\\/T0BCJDZ8Q\\/56340699763\\/ZVVDA9AlAZbcekc8dWtH1JpE\"}"}'))
 });
