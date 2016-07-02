@@ -81,10 +81,11 @@ app.post('/secret/get', function (req, res) {
         return
       } else{
         secret = reply.toString();
-        res.end(secret)
-        updateMessage(payload, secret); //execute action
+        res.send(secret)
+        //updateMessage(payload, secret); //execute action
       }
-    })
+    });
+    client.del(redisKey);
   } else {
     console.log('Null Payload or Failed token verification.');
     console.log('Expected token: '+verificationToken)
