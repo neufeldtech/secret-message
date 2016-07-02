@@ -73,7 +73,7 @@ app.post('/secret/set', function (req, res) {
 app.post('/secret/get', function (req, res) {
   var payload = safelyParseJson(req.body.payload);
   if (payload && payload.token == verificationToken){
-    var secretId = payload.attachments[0].callback_id;
+    var secretId = payload.callback_id;
     client.get(secretId, function(err,reply){
       var secret = ""
       if (err){
