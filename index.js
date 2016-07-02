@@ -82,6 +82,7 @@ app.post('/secret/get', function (req, res) {
       } else{
         secret = reply.toString();
         res.json({
+          "delete_original": true,
           "text": "This is the secret: "+secret,
           "response_type": "ephemeral"
         })
