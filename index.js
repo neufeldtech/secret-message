@@ -5,7 +5,6 @@ var verificationToken = process.env.SLACK_VERIFICATION_TOKEN || 'foobar';
 var clientID = process.env.SLACK_CLIENT_ID || 'foobar';
 var clientSecret = process.env.SLACK_CLIENT_SECRET || 'foobar';
 var callbackURL = process.env.SLACK_CALLBACK_URL || 'foobar';
-var request = require('request');
 var bodyParser = require('body-parser');
 var passport = require('passport');
 var SlackStrategy = require('passport-slack').Strategy;
