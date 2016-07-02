@@ -1,5 +1,10 @@
 {
-  "name": "mynodeapp",
+  "name": "slack-secret",
+  "repository" :
+    { "type" : "git"
+    , "url" : "https://github.com/neufeldtech/slack-secret.git"
+  },
+  "author":"Jordan Neufeld <myjc.niv@gmail.com> (https://github.com/neufeldtech)",
   "version": "0.0.1",
   "dependencies": {
     "body-parser": "^1.15.2",
