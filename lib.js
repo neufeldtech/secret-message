@@ -1,5 +1,15 @@
 var request = require('request');
 module.exports = function(){
+  this.wakeUp = function(url){
+    request(
+      {
+        method: 'get',
+        uri: url + '/',
+      }
+    , function (error, response, body) {
+      }
+    );
+  }
   this.safelyParseJson = function(json) {
     var parsed
     try {
@@ -56,7 +66,6 @@ module.exports = function(){
   }
   this.updateMessage = function(payload){
     var message = {
-      "response_type": "ephemeral",
       "text":"this is the secret"
     }
     request(
