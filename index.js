@@ -73,12 +73,17 @@ app.post('/secret/set', function (req, res) {
 app.post('/secret/get', function (req, res) {
   var payload = safelyParseJson(req.body.payload);
   if (payload && payload.token == verificationToken){
+    console.log(JSON.stringify(payload));
     var secretId = payload.callback_id;
     client.get(secretId, function(err,reply){
       var secret = ""
       if (err){
         console.log('error retrieving key from redis: '+err)
-        return
+        res.json({
+          "delete_original": true,
+          "text": "ERROR: Secret not found",
+          "response_type": "ephemeral"
+        })
       } else{
         secret = reply.toString();
         res.json({
