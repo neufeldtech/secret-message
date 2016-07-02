@@ -58,7 +58,8 @@ app.post('/secret/set', function (req, res) {
   if (body.token == verificationToken){
     res.end(null,function(err){ //send a 200 response
       sendSecret(body.response_url, body.user_name, body.text); //execute the action
-      client.set(body.message_ts, body.text)
+      var redisKey = body.team_id + body.channel_id + body.user_id;
+      client.set(redisKey, body.text)
     });
   } else {
     console.log('Failed token verification.');
@@ -73,7 +74,8 @@ app.post('/secret/get', function (req, res) {
   console.log(payload);
   if (payload && payload.token == verificationToken){
     res.end(null,function(err){ //send a 200 response first
-      client.get(payload.message_ts, function(err,reply){
+      var redisKey = payload.team.id + payload.channel.id + payload.user.id;
+      client.get(redisKey, function(err,reply){
         var secret = ""
         if (err){
           console.log('error retrieving key from redis: '+err)
