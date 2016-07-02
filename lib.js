@@ -19,14 +19,14 @@ module.exports = function(){
     }
     return parsed // Could be undefined!
   }
-  this.sendSecret = function(responseUrl, username, text){
+  this.sendSecret = function(responseUrl, username, text, secretId){
     var message = {
       "response_type":"in_channel",
       "attachments": [
         {
           "fallback": "Please visit http://slacksecret.neufeldtech.com",
           "title": username + " sent a secret message:",
-          "callback_id": "readMessage",
+          "callback_id": secretId,
           "color": "#3AA3E3",
           "attachment_type": "default",
           "actions": [

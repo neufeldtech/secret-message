@@ -12,6 +12,7 @@ var passport = require('passport');
 var SlackStrategy = require('passport-slack').Strategy;
 var redis = require('redis');
 var client = redis.createClient(redisURL);
+var shortId = require('shortid');
 require('./lib.js')();
 
 setInterval(function() {
@@ -44,7 +45,7 @@ passport.use(new SlackStrategy({
 
 app.get('/auth/slack', passport.authorize('slack'));
 
-app.get('/auth/slack/callback', passport.authorize('slack', failureRedirect: 'http://slacksecret.neufeldtech.com/error'}), function(req, res) {
+app.get('/auth/slack/callback', passport.authorize('slack', {failureRedirect: 'http://slacksecret.neufeldtech.com/error'}), function(req, res) {
     res.redirect('http://slacksecret.neufeldtech.com/success');
   });
 
@@ -57,9 +58,9 @@ app.post('/secret/set', function (req, res) {
   var body = req.body
   if (body.token == verificationToken){
     res.end(null,function(err){ //send a 200 response
-      sendSecret(body.response_url, body.user_name, body.text); //execute the action
-      var redisKey = body.team_id + body.channel_id + body.user_id;
-      client.set(redisKey, body.text)
+      var secretId = shortId.generate()
+      sendSecret(body.response_url, body.user_name, body.text, secretId); //execute the action
+      client.set(secretId, body.text)
     });
   } else {
     console.log('Failed token verification.');
@@ -72,8 +73,8 @@ app.post('/secret/set', function (req, res) {
 app.post('/secret/get', function (req, res) {
   var payload = safelyParseJson(req.body.payload);
   if (payload && payload.token == verificationToken){
-    var redisKey = payload.team.id + payload.channel.id + payload.user.id;
-    client.get(redisKey, function(err,reply){
+    var secretId = payload.attachments[0].callback_id;
+    client.get(secretId, function(err,reply){
       var secret = ""
       if (err){
         console.log('error retrieving key from redis: '+err)
