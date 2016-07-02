@@ -73,19 +73,18 @@ app.post('/secret/get', function (req, res) {
   var payload = safelyParseJson(req.body.payload);
   console.log(payload);
   if (payload && payload.token == verificationToken){
-    res.end(null,function(err){ //send a 200 response first
-      var redisKey = payload.team.id + payload.channel.id + payload.user.id;
-      client.get(redisKey, function(err,reply){
-        var secret = ""
-        if (err){
-          console.log('error retrieving key from redis: '+err)
-          return
-        } else{
-          secret = reply.toString();
-          updateMessage(payload, secret); //execute action
-        }
-      })
-    });
+    res.end()
+    var redisKey = payload.team.id + payload.channel.id + payload.user.id;
+    client.get(redisKey, function(err,reply){
+      var secret = ""
+      if (err){
+        console.log('error retrieving key from redis: '+err)
+        return
+      } else{
+        secret = reply.toString();
+        updateMessage(payload, secret); //execute action
+      }
+    })
   } else {
     console.log('Null Payload or Failed token verification.');
     console.log('Expected token: '+verificationToken)
