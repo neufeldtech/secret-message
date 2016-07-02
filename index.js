@@ -23,7 +23,7 @@ client.on('connect', function (err) {
 });
 
 client.on('error', function(err){
-  console.error('Redis encountered an error: '+err)
+  console.log('Redis encountered an error: '+err)
   console.log('we will now exit')
   process.exit(1);
 })
@@ -73,7 +73,16 @@ app.post('/secret/get', function (req, res) {
   console.log(payload);
   if (payload && payload.token == verificationToken){
     res.end(null,function(err){ //send a 200 response first
-      updateMessage(payload); //execute action
+      client.get(payload.message_ts, function(err,reply){
+        var secret = ""
+        if (err){
+          console.log('error retrieving key from redis: '+err)
+          return
+        } else{
+          secret = reply.toString();
+          updateMessage(payload, secret); //execute action
+        }
+      })
     });
   } else {
     console.log('Null Payload or Failed token verification.');

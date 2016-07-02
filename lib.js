@@ -35,12 +35,6 @@ module.exports = function(){
               "text": "View message",
               "type": "button",
               "value": "readMessage",
-              "confirm": {
-                "title": "This message will self destruct after reading!",
-                "text": text,
-                "ok_text":"I have read the message!",
-                "dismiss_text":"Cancel"
-              }
             }
           ]
         }
@@ -64,9 +58,9 @@ module.exports = function(){
       }
     );
   }
-  this.updateMessage = function(payload){
+  this.updateMessage = function(payload, secret){
     var message = {
-      "text":"this is the secret"
+      "text":secret
     }
     request(
       {
