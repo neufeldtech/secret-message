@@ -73,7 +73,6 @@ app.post('/secret/get', function (req, res) {
   var payload = safelyParseJson(req.body.payload);
   console.log(payload);
   if (payload && payload.token == verificationToken){
-    res.end()
     var redisKey = payload.team.id + payload.channel.id + payload.user.id;
     client.get(redisKey, function(err,reply){
       var secret = ""
@@ -82,6 +81,7 @@ app.post('/secret/get', function (req, res) {
         return
       } else{
         secret = reply.toString();
+        res.end(secret)
         updateMessage(payload, secret); //execute action
       }
     })
