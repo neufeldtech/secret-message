@@ -71,7 +71,6 @@ app.post('/secret/set', function (req, res) {
 
 app.post('/secret/get', function (req, res) {
   var payload = safelyParseJson(req.body.payload);
-  console.log(payload);
   if (payload && payload.token == verificationToken){
     var redisKey = payload.team.id + payload.channel.id + payload.user.id;
     client.get(redisKey, function(err,reply){
@@ -83,7 +82,7 @@ app.post('/secret/get', function (req, res) {
         secret = reply.toString();
         res.json({
           "delete_original": true,
-          "text": "This is the secret: "+secret,
+          "text": "secret",
           "response_type": "ephemeral"
         })
         //updateMessage(payload, secret); //execute action
@@ -98,6 +97,5 @@ app.post('/secret/get', function (req, res) {
   }
 });
 app.listen(process.env.PORT, function () {
-  console.log('Example app listening');
-  // console.log(safelyParseJson('{"payload":"{\"actions\":[{\"name\":\"readMessage\",\"value\":\"readMessage\"}],\"callback_id\":\"readMessage\",\"team\":{\"id\":\"T0BCJDZ8Q\",\"domain\":\"neufeldtech\"},\"channel\":{\"id\":\"C0BCEGD6X\",\"name\":\"general\"},\"user\":{\"id\":\"U0BCH4N2K\",\"name\":\"jordan.neufeld\"},\"action_ts\":\"1467468185.125008\",\"message_ts\":\"1467468175.000005\",\"attachment_id\":\"1\",\"token\":\"XiLexN3vvMIE5dXD8NlEM0Kn\",\"original_message\":{\"text\":\"\",\"bot_id\":\"B1NBWFTS6\",\"attachments\":[{\"callback_id\":\"readMessage\",\"fallback\":\"Please visit <http:\\/\\/secretmessage.neufeldtech.com>\",\"title\":\"jordan.neufeld sent a secret message:\",\"id\":1,\"color\":\"3AA3E3\",\"actions\":[{\"id\":\"1\",\"name\":\"readMessage\",\"text\":\"View message\",\"type\":\"button\",\"value\":\"readMessage\",\"style\":\"\",\"confirm\":{\"text\":\"yolo\",\"title\":\"This message will self destruct after reading!\",\"ok_text\":\"I have read the message!\",\"dismiss_text\":\"Cancel\"}}]}],\"type\":\"message\",\"subtype\":\"bot_message\",\"ts\":\"1467468175.000005\"},\"response_url\":\"https:\\/\\/hooks.slack.com\\/actions\\/T0BCJDZ8Q\\/56340699763\\/ZVVDA9AlAZbcekc8dWtH1JpE\"}"}'))
+  console.log('We bootstrapped!');
 });
