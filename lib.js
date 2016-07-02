@@ -24,7 +24,7 @@ module.exports = function(){
       "response_type":"in_channel",
       "attachments": [
         {
-          "fallback": "Please visit http://secretmessage.neufeldtech.com",
+          "fallback": "Please visit http://slacksecret.neufeldtech.com",
           "title": username + " sent a secret message:",
           "callback_id": "readMessage",
           "color": "#3AA3E3",
@@ -48,27 +48,6 @@ module.exports = function(){
         body: message
       }
     , function (error, response, body) {
-        if(!error && response.statusCode == 200){
-          return
-        } else {
-          console.log(error)
-          console.log('error: '+ response.statusCode)
-          console.log(body)
-        }
-      }
-    );
-  }
-  this.updateMessage = function(payload, secret){
-    var message = {
-      "text":secret
-    }
-    request(
-      {
-        method: 'post',
-        uri: payload.response_url,
-        json: true,
-        body: message
-      }, function(error, response, body){
         if(!error && response.statusCode == 200){
           return
         } else {

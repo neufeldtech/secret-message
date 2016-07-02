@@ -44,8 +44,8 @@ passport.use(new SlackStrategy({
 
 app.get('/auth/slack', passport.authorize('slack'));
 
-app.get('/auth/slack/callback', passport.authorize('slack', {successRedirect: 'http://secretmessage.neufeldtech.com/success', failureRedirect: 'http://secretmessage.neufeldtech.com/error'}), function(req, res) {
-    //res.redirect('https://my.slack.com');
+app.get('/auth/slack/callback', passport.authorize('slack', failureRedirect: 'http://slacksecret.neufeldtech.com/error'}), function(req, res) {
+    res.redirect('http://slacksecret.neufeldtech.com/success');
   });
 
 //Slack token authentication middleware
@@ -85,7 +85,6 @@ app.post('/secret/get', function (req, res) {
           "text": secret,
           "response_type": "ephemeral"
         })
-        //updateMessage(payload, secret); //execute action
       }
     });
     client.del(redisKey);
