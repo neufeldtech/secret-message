@@ -54,4 +54,26 @@ module.exports = function(){
       }
     );
   }
+  this.updateMessage = function(payload){
+    var message = {
+      "response_type": "ephemeral",
+      "text":"this is the secret"
+    }
+    request(
+      {
+        method: 'post',
+        uri: payload.response_url,
+        json: true,
+        body: message
+      }, function(error, response, body){
+        if(!error && response.statusCode == 200){
+          return
+        } else {
+          console.log(error)
+          console.log('error: '+ response.statusCode)
+          console.log(body)
+        }
+      }
+    );
+  }
 }

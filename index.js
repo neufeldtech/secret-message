@@ -37,8 +37,8 @@ app.get('/',function (req, res){
 app.post('/secret', function (req, res) {
   var body = req.body
   if (body.token == verificationToken){
-    res.end(null,function(err){
-      sendSecret(body.response_url, body.user_name, body.text);
+    res.end(null,function(err){ //send a 200 response
+      sendSecret(body.response_url, body.user_name, body.text); //execute the action
     });
   } else {
     console.log('Failed token verification.');
@@ -49,9 +49,18 @@ app.post('/secret', function (req, res) {
 });
 
 app.post('/update', function (req, res) {
-  console.log(JSON.stringify(req.body.payload));
   var payload = safelyParseJson(req.body.payload);
   console.log(payload);
+  if (payload && payload.token == verificationToken){
+    res.end(null,function(err){ //send a 200 response first
+      updateMessage(payload); //execute action
+    });
+  } else {
+    console.log('Failed token verification.');
+    console.log('Expected token: '+verificationToken)
+    console.log('Received token: '+req.body.token);
+    return
+  }
 });
 app.listen(process.env.PORT, function () {
   console.log('Example app listening');
