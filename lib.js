@@ -27,7 +27,7 @@ module.exports = function(){
           "fallback": "Please visit http://slacksecret.neufeldtech.com",
           "title": username + " sent a secret message:",
           "callback_id": secretId,
-          "color": "#3AA3E3",
+          "color": "#6D5692",
           "attachment_type": "default",
           "actions": [
             {
