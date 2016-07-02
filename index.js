@@ -93,7 +93,7 @@ app.post('/secret/get', function (req, res) {
         })
       }
     });
-    client.del(redisKey);
+    client.del(secretId);
   } else {
     console.log('Null Payload or Failed token verification.');
     console.log('Expected token: '+verificationToken)
