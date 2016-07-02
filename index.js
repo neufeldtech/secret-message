@@ -81,7 +81,10 @@ app.post('/secret/get', function (req, res) {
         return
       } else{
         secret = reply.toString();
-        res.send(secret)
+        res.json({
+          "text": "This is the secret: "+secret,
+          "response_type": "ephemeral"
+        })
         //updateMessage(payload, secret); //execute action
       }
     });
