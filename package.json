@@ -1,8 +1,8 @@
 {
-  "name": "slack-secret",
+  "name": "secret-message",
   "repository" :
     { "type" : "git"
-    , "url" : "https://github.com/neufeldtech/slack-secret.git"
+    , "url" : "https://github.com/neufeldtech/secret-message.git"
   },
   "author":"Jordan Neufeld <myjc.niv@gmail.com> (https://github.com/neufeldtech)",
   "version": "0.0.1",
