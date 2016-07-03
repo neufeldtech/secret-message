@@ -77,7 +77,7 @@ app.post('/secret/get', function (req, res) {
     var secretId = payload.callback_id;
     client.get(secretId, function(err,reply){
       var secret = ""
-      if (err){
+      if (err || !reply){
         console.log('error retrieving key from redis: '+err)
         res.json({
           "delete_original": true,
