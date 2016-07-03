@@ -45,8 +45,8 @@ passport.use(new SlackStrategy({
 
 app.get('/auth/slack', passport.authorize('slack'));
 
-app.get('/auth/slack/callback', passport.authorize('slack', {failureRedirect: 'http://slacksecret.neufeldtech.com/error'}), function(req, res) {
-    res.redirect('http://slacksecret.neufeldtech.com/success');
+app.get('/auth/slack/callback', passport.authorize('slack', {failureRedirect: 'http://secretmessage.xyz/error'}), function(req, res) {
+    res.redirect('http://secretmessage.xyz/success');
   });
 
 //Slack token authentication middleware
