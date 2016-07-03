@@ -1,12 +1,3 @@
-#Slack-Secret
-
-1) /secret thisisthepassword
-2) Secret gets sent to server
-3) server posts message back to channel with button
-4) when you click the button you get a "confirm button" that shows you the secret
-5 after you have clicked the button once, it disappears
-
-Build these endpoints:
-http://slacksecret.neufeldtech.com/help
-http://slacksecret.neufeldtech.com/error
-http://slacksecret.neufeldtech.com/success
+#Slack Secret
+TODO:
+fill out this readme
