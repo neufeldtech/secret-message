@@ -2026,7 +2026,7 @@
 			input[type="button"].special:hover,
 			button.special:hover,
 			.button.special:hover {
-				background-color: #5ca3e8;
+				background-color: #8d85a2;
 			}
 
 			input[type="submit"].special:active,
@@ -2770,15 +2770,15 @@
 	}
 
 		.spotlight .image {
-			width: 30%;
-			border-radius: 100%;
+			width: 65%;
+			border-radius: 10px;
 			margin: 0 3em 0 0;
 			display: block;
 		}
 
 			.spotlight .image img {
 				display: block;
-				border-radius: 100%;
+				border-radius: 10px;
 				width: 100%;
 			}
 
@@ -3198,7 +3198,7 @@
 					.wrapper.style2 input[type="button"].special:hover,
 					.wrapper.style2 button.special:hover,
 					.wrapper.style2 .button.special:hover {
-						background-color: #5ca3e8;
+						background-color: #8d85a2;
 					}
 
 					.wrapper.style2 input[type="submit"].special:active,
@@ -3412,7 +3412,7 @@
 					.wrapper.style3 input[type="button"].special:hover,
 					.wrapper.style3 button.special:hover,
 					.wrapper.style3 .button.special:hover {
-						background-color: #5ca3e8;
+						background-color: #8d85a2;
 					}
 
 					.wrapper.style3 input[type="submit"].special:active,
