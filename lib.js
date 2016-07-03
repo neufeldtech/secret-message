@@ -24,7 +24,7 @@ module.exports = function(){
       "response_type":"in_channel",
       "attachments": [
         {
-          "fallback": "Please visit http://slacksecret.neufeldtech.com",
+          "fallback": username + " sent a secret message",
           "title": username + " sent a secret message:",
           "callback_id": secretId,
           "color": "#6D5692",
