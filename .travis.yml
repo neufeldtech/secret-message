@@ -1,0 +1,5 @@
+language: node_js
+node_js:
+  - "6.2.x"
+after_success:
+  - surge --project ./html2 --domain secretmessage.xyz

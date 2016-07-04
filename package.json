@@ -1,10 +1,10 @@
 {
   "name": "secret-message",
-  "repository" :
-    { "type" : "git"
-    , "url" : "https://github.com/neufeldtech/secret-message.git"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/neufeldtech/secret-message.git"
   },
-  "author":"Jordan Neufeld <myjc.niv@gmail.com> (https://github.com/neufeldtech)",
+  "author": "Jordan Neufeld <myjc.niv@gmail.com> (https://github.com/neufeldtech)",
   "version": "0.0.1",
   "dependencies": {
     "body-parser": "^1.15.2",
@@ -18,5 +18,8 @@
   "engines": {
     "node": "6.2.x",
     "npm": "3.9.x"
+  },
+  "devDependencies": {
+    "surge": "^0.18.0"
   }
 }
