@@ -1,25 +1,35 @@
 var request = require('request');
-module.exports = function(){
-  this.wakeUp = function(url){
+module.exports = {
+  wakeUp: function(url, callback){
     request(
       {
         method: 'get',
-        uri: url + '/',
+        uri: url,
       }
     , function (error, response, body) {
+        if (error){
+          callback('Error calling self wakeup: ' + error)
+          return
+        } else {
+          callback(null, response.statusCode)
+          return
+        }
       }
     );
-  }
-  this.safelyParseJson = function(json) {
+  },
+  safelyParseJson: function(json, callback) {
     var parsed
     try {
       parsed = JSON.parse(json)
     } catch (e) {
       console.error("failure to parse json: "+e)
+      callback(null)
+      return
     }
-    return parsed // Could be undefined!
-  }
-  this.sendSecret = function(responseUrl, username, text, secretId){
+    callback(parsed)
+    return
+  },
+  sendSecret: function(responseUrl, username, text, secretId, callback){
     var message = {
       "response_type":"in_channel",
       "attachments": [
@@ -48,12 +58,12 @@ module.exports = function(){
         body: message
       }
     , function (error, response, body) {
-        if(!error && response.statusCode == 200){
+        if(error){
+          callback("Error posting secret button to slack " + error)
           return
         } else {
-          console.log(error)
-          console.log('error: '+ response.statusCode)
-          console.log(body)
+          callback(null, response.statusCode)
+          return
         }
       }
     );

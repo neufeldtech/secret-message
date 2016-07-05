@@ -13,10 +13,10 @@ var SlackStrategy = require('passport-slack').Strategy;
 var redis = require('redis');
 var client = redis.createClient(redisURL);
 var shortId = require('shortid');
-require('./lib.js')();
+var lib = require('./lib.js');
 
 setInterval(function() {
-  wakeUp(appURL);
+  lib.wakeUp(appURL);
 }, 300000); // every 5 minutes (300000)
 
 client.on('connect', function (err) {
@@ -59,7 +59,7 @@ app.post('/secret/set', function (req, res) {
   if (body.token == verificationToken){
     res.end(null,function(err){ //send a 200 response
       var secretId = shortId.generate()
-      sendSecret(body.response_url, body.user_name, body.text, secretId); //execute the action
+      lib.sendSecret(body.response_url, body.user_name, body.text, secretId); //execute the action
       client.set(secretId, body.text)
     });
   } else {
@@ -71,7 +71,7 @@ app.post('/secret/set', function (req, res) {
 });
 
 app.post('/secret/get', function (req, res) {
-  var payload = safelyParseJson(req.body.payload);
+  var payload = lib.safelyParseJson(req.body.payload);
   if (payload && payload.token == verificationToken){
     console.log(JSON.stringify(payload));
     var secretId = payload.callback_id;
@@ -101,6 +101,10 @@ app.post('/secret/get', function (req, res) {
     return
   }
 });
-app.listen(process.env.PORT, function () {
-  console.log('We bootstrapped!');
+if (process.env.NODE_ENV == 'test'){
+  port = 0; //use random port for test env
+}
+app.listen(port, function () {
+  console.log('Server listening on port ' + this.address().port);
 });
+module.exports = app;
