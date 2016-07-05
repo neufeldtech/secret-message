@@ -9,24 +9,25 @@
   "dependencies": {
     "body-parser": "^1.15.2",
     "express": "^3.0.6",
+    "ioredis": "^2.2.0",
     "passport": "^0.3.2",
     "passport-slack": "0.0.6",
-    "redis": "^2.6.2",
     "request": "^2.72.0",
     "shortid": "^2.2.6"
   },
   "scripts": {
-    "test": "mocha --timeout 5000 --reporter nyan ./test/*.test.js"
+    "test": "NODE_ENV=test; mocha --timeout 5000 --reporter nyan ./test/*.test.js"
   },
   "engines": {
     "node": "6.2.x",
     "npm": "3.9.x"
   },
   "devDependencies": {
-    "surge": "^0.18.0"
     "chai": "^3.5.0",
     "mocha": "^2.5.3",
     "nock": "^8.0.0",
-    "supertest": "^1.2.0"
+    "redis-mock": "^0.9.0",
+    "supertest": "^1.2.0",
+    "surge": "^0.18.0"
   }
 }
