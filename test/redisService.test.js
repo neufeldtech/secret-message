@@ -34,6 +34,30 @@ describe("get redis key", function(){
     })
   })
 })
+describe("delete redis key", function(){
+  before(function(done){
+    redisService.flushall(function(err,reply){
+      if (err){
+        return
+      } else {
+        redisService.set('deleteMe','The value is apple', function(err,reply){})
+        done()
+      }
+    });
+  });
+  it("should return 1 if one key was deleted", function(done){
+    redisService.del('deleteMe', function(err,reply){
+      reply.should.equal(1)
+      done()
+    })
+  })
+  it("should return 0 if no key was deleted", function(done){
+    redisService.del('unknown_key', function(err,reply){
+      reply.should.equal(0)
+      done()
+    })
+  })
+})
 describe("flush all keys and databases", function(){
   it("should echo OK if successfull",function(done){
     redisService.flushall(function(err,reply){

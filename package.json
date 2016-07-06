@@ -17,8 +17,8 @@
   },
   "scripts": {
     "test": "NODE_ENV=test; mocha --timeout 5000 --reporter nyan ./test/*.test.js",
-    "coverage":"./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha ./test/*.test.js",
-    "growl":"./node_modules/mocha/bin/mocha --timeout 5000 -G --reporter nyan -w ./test/*.test.js"
+    "coverage": "./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha ./test/*.test.js",
+    "growl": "./node_modules/mocha/bin/mocha --timeout 5000 -G --reporter nyan -w ./test/*.test.js"
   },
   "engines": {
     "node": "6.2.x",

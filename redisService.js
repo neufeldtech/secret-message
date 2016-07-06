@@ -27,6 +27,15 @@ module.exports = function(client){
       }
     });
   }
+  module.del = function(key, callback){
+    client.del(key, function(err, reply){
+      if (err){
+        callback("Error deleting redis key: "+err)
+      } else {
+        callback(null, reply)
+      }
+    })
+  }
   module.flushall = function(callback){
     client.flushall(function(err, reply){
       if (err){
