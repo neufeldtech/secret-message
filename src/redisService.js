@@ -1,4 +1,3 @@
-var shortId = require('shortid');
 module.exports = function(client){
   var module = {};
 

@@ -1,5 +1,5 @@
 var should = require('chai').should();
-var lib = require('../lib.js');
+var lib = require('../src/lib.js');
 var nock = require('nock');
 
 var appNock =  nock('https://slacksecret.herokuapp.com')

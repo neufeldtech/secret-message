@@ -1,6 +1,6 @@
 var should = require('chai').should();
 var redis = require('redis-mock')
-var redisService = require('../redisService.js')(redis.createClient())
+var redisService = require('../src/redisService.js')(redis.createClient())
 
 describe("set redis key", function(){
   it("should return 'OK' if successfull", function(done){

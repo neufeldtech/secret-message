@@ -9,12 +9,12 @@ var redis = new Redis(redisURL,
       return delay;
     }
   });
-var redisService = require('./redisService.js')(redis)
+var redisService = require('./src/redisService.js')(redis)
 
 var express = require('express');
 var app = express();
 
-require('./app')(app, redisService);
+require('./src/app')(app, redisService);
 
 app.listen(port, function () {
   console.log('Server listening on port ' + this.address().port);
