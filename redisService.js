@@ -9,7 +9,6 @@ module.exports = function(client){
     client.on('error', function(err){
       console.log('Redis error: '+err)
     })
-
   module.set = function(key, value, callback){
     client.set(key, value, function(err,reply){
       if (err){
@@ -17,7 +16,25 @@ module.exports = function(client){
       } else {
         callback(null, reply)
       }
-    })
+    });
+  }
+  module.get = function(key, callback){
+    client.get(key, function(err, reply){
+      if (err){
+        callback("Error getting redis key: "+err)
+      } else {
+        callback(null, reply)
+      }
+    });
+  }
+  module.flushall = function(callback){
+    client.flushall(function(err, reply){
+      if (err){
+        callback("Error executing flushall: "+err)
+      } else {
+        callback(null, reply)
+      }
+    });
   }
   return module;
 }
