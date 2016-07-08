@@ -15,14 +15,15 @@ describe("set redis key", function(){
   });
 })
 
-describe("SINON TEST", function(){
-
+describe("on redis set error", function(){
   before(function(){
-    sinon.stub(client,'set').yields(null,'callback value');
+    sinon.stub(client,'set').yields('this is an error');
   });
-  it("should call callback with args",function() {
-    redisService.set('cb','cb',function(){})
-    client.set.called.should.be.true
+  it("should call callback with error msg",function() {
+    var callback = sinon.spy()
+    redisService.set('cb','cb',callback)
+    expect(callback.callCount).to.be.equal(1)
+    expect(callback.args[0]).to.exist
   })
   after(function(){
     client.set.restore()
@@ -53,6 +54,22 @@ describe("get redis key", function(){
     })
   });
 })
+
+describe("on redis get error", function(){
+  before(function(){
+    sinon.stub(client,'get').yields('this is an error');
+  });
+  it("should call callback with error msg",function() {
+    var callback = sinon.spy()
+    redisService.get('key',callback)
+    expect(callback.callCount).to.be.equal(1)
+    expect(callback.args[0]).to.exist
+  })
+  after(function(){
+    client.get.restore()
+  })
+})
+
 describe("delete redis key", function(){
   before(function(done){
     redisService.flushall(function(err,reply){
@@ -77,6 +94,22 @@ describe("delete redis key", function(){
     })
   })
 })
+
+describe("on redis delete key error", function(){
+  before(function(){
+    sinon.stub(client,'del').yields('this is an error');
+  });
+  it("should call callback with error msg",function() {
+    var callback = sinon.spy()
+    redisService.del('key',callback)
+    expect(callback.callCount).to.be.equal(1)
+    expect(callback.args[0]).to.exist
+  })
+  after(function(){
+    client.del.restore()
+  })
+})
+
 describe("flush all keys and databases", function(){
   it("should echo OK if successfull",function(done){
     redisService.flushall(function(err,reply){
@@ -85,3 +118,48 @@ describe("flush all keys and databases", function(){
     });
   });
 });
+
+describe("on redis flushall error", function(){
+  before(function(){
+    sinon.stub(client,'flushall').yields('this is an error');
+  });
+  it("should call callback with error msg",function() {
+    var callback = sinon.spy()
+    redisService.flushall(callback)
+    expect(callback.callCount).to.be.equal(1)
+    expect(callback.args[0]).to.exist
+  })
+  after(function(){
+    client.flushall.restore()
+  })
+})
+
+describe("connect event handler", function(){
+  before(function(){
+    sinon.stub(client,'on').yields('Connected to redis');
+  });
+  it("should call callback with connect success message",function(){
+    var callback = sinon.spy();
+    redisService.registerConnectEvent(callback)
+    expect(client.on.callCount).to.be.equal(1)
+    expect(callback.args[0]).to.exist
+  })
+  after(function(){
+    client.on.restore()
+  })
+})
+
+describe("error event handler", function(){
+  before(function(){
+    sinon.stub(client,'on').yields('this is an error');
+  });
+  it("should call callback with error message",function(){
+    var callback = sinon.spy();
+    redisService.registerErrorEvent(callback)
+    expect(client.on.callCount).to.be.equal(1)
+    expect(callback.args[0]).to.exist
+  })
+  after(function(){
+    client.on.restore()
+  })
+})

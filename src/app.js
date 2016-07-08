@@ -13,6 +13,13 @@ var passport = require('passport'),
 
 
 module.exports = function(app, redisService){
+  redisService.registerConnectEvent(function(cb){
+    console.log(cb)
+  });
+  redisService.registerErrorEvent(function(cb){
+    console.log(cb)
+  });
+
   passport.use(new SlackStrategy({
     clientID: clientID,
     clientSecret: clientSecret,

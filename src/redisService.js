@@ -3,13 +3,18 @@ var debug = require('debug')('app');
 module.exports = function(client){
   var module = {};
 
-    client.on('connect', function (err) {
-      debug('redis client connected')
-    });
-
+  module.registerErrorEvent = function(callback){
     client.on('error', function(err){
-      debug('Redis error: '+err)
-    })
+      callback(err);
+    });
+  }
+
+  module.registerConnectEvent = function(callback){
+    client.on('connect', function () {
+      callback("redis client connected")
+    });
+  }
+
   module.set = function(key, value, callback){
     client.set(key, value, function(err,reply){
       if (err){
