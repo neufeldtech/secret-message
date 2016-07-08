@@ -6,6 +6,7 @@ var verificationToken = process.env.SLACK_VERIFICATION_TOKEN || 'foobar',
 
 var passport = require('passport'),
     SlackStrategy = require('passport-slack').Strategy,
+    debug = require('debug')('app'),
     bodyParser = require('body-parser'),
     shortId = require('shortid'),
     lib = require('./lib.js');
@@ -25,7 +26,13 @@ module.exports = function(app, redisService){
   ));
 
   setInterval(function() {
-    lib.wakeUp(appURL);
+    lib.wakeUp(appURL, function(err,res){
+      if (err){
+        debug(err)
+      } else {
+        return
+      }
+    });
   }, 300000); // every 5 minutes (300000)
 
   app.use(bodyParser.urlencoded({extended: true}));
@@ -50,9 +57,9 @@ module.exports = function(app, redisService){
         redisService.set(secretId, body.text)
       });
     } else {
-      console.log('Failed token verification.');
-      console.log('Expected token: '+verificationToken)
-      console.log('Received token: '+req.body.token);
+      debug('Failed token verification.');
+      debug('Expected token: '+verificationToken)
+      debug('Received token: '+req.body.token);
       return
     }
   });
@@ -60,12 +67,12 @@ module.exports = function(app, redisService){
   app.post('/secret/get', function (req, res) {
     var payload = lib.safelyParseJson(req.body.payload);
     if (payload && payload.token == verificationToken){
-      console.log(JSON.stringify(payload));
+      debug(JSON.stringify(payload));
       var secretId = payload.callback_id;
       redisService.get(secretId, function(err,reply){
         var secret = ""
         if (err || !reply){
-          console.log('error retrieving key from redis: '+err)
+          debug('error retrieving key from redis: '+err)
           res.json({
             "delete_original": true,
             "text": "ERROR: Secret not found",
@@ -82,9 +89,9 @@ module.exports = function(app, redisService){
       });
       redisService.del(secretId);
     } else {
-      console.log('Null Payload or Failed token verification.');
-      console.log('Expected token: '+verificationToken)
-      console.log('Received token: '+req.body.token);
+      debug('Null Payload or Failed token verification.');
+      debug('Expected token: '+verificationToken)
+      debug('Received token: '+req.body.token);
       return
     }
   });

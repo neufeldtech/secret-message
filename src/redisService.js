@@ -1,12 +1,14 @@
+var debug = require('debug')('app');
+
 module.exports = function(client){
   var module = {};
 
     client.on('connect', function (err) {
-      console.log('redis client connected')
+      debug('redis client connected')
     });
 
     client.on('error', function(err){
-      console.log('Redis error: '+err)
+      debug('Redis error: '+err)
     })
   module.set = function(key, value, callback){
     client.set(key, value, function(err,reply){
@@ -20,7 +22,7 @@ module.exports = function(client){
   module.get = function(key, callback){
     client.get(key, function(err, reply){
       if (err){
-        callback("Error getting redis key: "+err)
+        callback(err)
       } else {
         callback(null, reply)
       }

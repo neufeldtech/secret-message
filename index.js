@@ -1,11 +1,17 @@
-var port = process.env.PORT || 5000;
+var port = process.env.PORT || 5000,
+    redisURL = process.env.REDIS_URL || 'foobar';
 
-var redisURL = process.env.REDIS_URL || 'foobar';
-var Redis = require('ioredis');
-var redis = new Redis(redisURL,
+var debug = require('debug')('app'),
+    Redis = require('ioredis'),
+    redis = new Redis(redisURL,
   {
     retryStrategy: function (times) {
-      var delay = Math.min(times * 2, 2000);
+      var delay = times * 100;
+      if (times > 30) {
+        // console.error('Could not reconnect to redis. Exiting')
+        throw new Error('Could not connect to Redis at ' + redisURL)
+        // process.exit(1)
+      }
       return delay;
     }
   });
@@ -17,5 +23,5 @@ var app = express();
 require('./src/app')(app, redisService);
 
 app.listen(port, function () {
-  console.log('Server listening on port ' + this.address().port);
+  debug('Server listening on port ' + this.address().port);
 });

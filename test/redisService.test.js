@@ -1,6 +1,10 @@
-var should = require('chai').should();
-var redis = require('redis-mock')
-var redisService = require('../src/redisService.js')(redis.createClient())
+var should = require('chai').should(),
+    assert = require('chai').assert,
+    expect = require('chai').expect,
+    sinon = require('sinon'),
+    redis = require('redis-mock'),
+    client = redis.createClient(),
+    redisService = require('../src/redisService.js')(client);
 
 describe("set redis key", function(){
   it("should return 'OK' if successfull", function(done){
@@ -8,8 +12,23 @@ describe("set redis key", function(){
       reply.should.equal('OK');
       done();
     })
+  });
+})
+
+describe("SINON TEST", function(){
+
+  before(function(){
+    sinon.stub(client,'set').yields(null,'callback value');
+  });
+  it("should call callback with args",function() {
+    redisService.set('cb','cb',function(){})
+    client.set.called.should.be.true
+  })
+  after(function(){
+    client.set.restore()
   })
 })
+
 describe("get redis key", function(){
   before(function(done){
     redisService.flushall(function(err,reply){
@@ -32,7 +51,7 @@ describe("get redis key", function(){
       should.not.exist(reply);
       done();
     })
-  })
+  });
 })
 describe("delete redis key", function(){
   before(function(done){

@@ -1,4 +1,5 @@
-var request = require('request');
+var request = require('request'),
+    debug = require('debug')('app');
 module.exports = {
   wakeUp: function(url, callback){
     request(
@@ -22,7 +23,7 @@ module.exports = {
     try {
       parsed = JSON.parse(json)
     } catch (e) {
-      console.error("failure to parse json: "+e)
+      debug("failure to parse json: "+e)
       callback(null)
       return
     }
