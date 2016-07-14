@@ -1,7 +1,9 @@
-var should = require('chai').should(),
-    lib = require('../src/lib.js'),
-    nock = require('nock'),
-    debug = require('debug')('test');
+var should = require('chai').should();
+var lib = require('../src/lib.js');
+var nock = require('nock');
+var debug = require('debug')('test');
+nock.disableNetConnect();
+nock.enableNetConnect(/slacksecret.herokuapp.com/);
 
 describe("lib keepalive function", function(){
   before(function(){
