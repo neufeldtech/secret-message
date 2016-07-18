@@ -1,4 +1,5 @@
 # Secret Message
+[![Build Status](https://travis-ci.org/neufeldtech/secret-message.svg?branch=master)](https://travis-ci.org/neufeldtech/secret-message) [![codecov](https://codecov.io/gh/neufeldtech/secret-message/branch/master/graph/badge.svg)](https://codecov.io/gh/neufeldtech/secret-message) 
 
  Send self-destructing secret messages through Slack
 

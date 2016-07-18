@@ -2,4 +2,5 @@ language: node_js
 node_js:
   - "6.2.2"
 after_success:
+  - bash <(curl -s https://codecov.io/bash)
   - surge --project ./html2 --domain secretmessage.xyz
