@@ -10,8 +10,6 @@ var debug = require('debug')('app');
 var bodyParser = require('body-parser');
 var shortId = require('shortid');
 var lib = require('./lib.js');
-var cryptoService = require('./crypto.js')();
-var sha256 = require('sha256');
 
 module.exports = function(app, redisService) {
   redisService.registerConnectEvent(function(cb) {
@@ -100,7 +98,7 @@ module.exports = function(app, redisService) {
             response_type: "ephemeral"
           });
         } else {
-          secret = reply.toString();
+          secret = reply;
           res.json({
             delete_original: true,
             text: secret,

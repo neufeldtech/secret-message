@@ -4,6 +4,7 @@ var express = require('express');
 var app = express();
 var nock = require('nock');
 var supertest;
+
 // require('../src/app')(app, redisService);
 // var supertest = require('supertest')(app);
 
