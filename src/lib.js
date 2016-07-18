@@ -18,17 +18,15 @@ module.exports = {
     }
     );
   },
-  safelyParseJson: function(json, callback) {
+  safelyParseJson: function(json) {
     var parsed;
     try {
       parsed = JSON.parse(json);
     } catch (e) {
       debug("failure to parse json: " + e);
-      callback(null);
-      return;
+      return null;
     }
-    callback(parsed);
-    return;
+    return parsed;
   },
   sendSecret: function(responseUrl, username, text, secretId, callback) {
     var message = {
