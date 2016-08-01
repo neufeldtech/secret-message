@@ -1,5 +1,5 @@
 # Secret Message
-[![Build Status](https://travis-ci.org/neufeldtech/secret-message.svg?branch=master)](https://travis-ci.org/neufeldtech/secret-message) [![codecov](https://codecov.io/gh/neufeldtech/secret-message/branch/master/graph/badge.svg)](https://codecov.io/gh/neufeldtech/secret-message) 
+[![Build Status](https://travis-ci.org/neufeldtech/secret-message.svg?branch=master)](https://travis-ci.org/neufeldtech/secret-message) [![codecov](https://codecov.io/gh/neufeldtech/secret-message/branch/master/graph/badge.svg)](https://codecov.io/gh/neufeldtech/secret-message)
 
  Send self-destructing secret messages through Slack
 
@@ -19,7 +19,7 @@ Visit [secretmessage.xyz](http://secretmessage.xyz) and click the **Add to Slack
 
 ## Issues
 
-Please [open a Github Issue](https://github.com/neufeldtech/slack-secret/issues/new) if you require assistance
+Please [open a Github Issue](https://github.com/neufeldtech/slack-secret/issues/new) or [Email us](mailto:support@secretmessage.xyz) if you require assistance
 
 ## Contribute
 - [Fork the repo](https://github.com/neufeldtech/slack-secret/fork)

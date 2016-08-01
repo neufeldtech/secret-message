@@ -1,7 +1,6 @@
 var verificationToken = process.env.SLACK_VERIFICATION_TOKEN || 'foobar';
 var clientID = process.env.SLACK_CLIENT_ID || 'foobar';
 var clientSecret = process.env.SLACK_CLIENT_SECRET || 'foobar';
-var callbackURL = process.env.SLACK_CALLBACK_URL || 'foobar';
 var appURL = process.env.APP_URL || 'foobar';
 
 var passport = require('passport');
@@ -22,7 +21,7 @@ module.exports = function(app, redisService) {
   passport.use(new SlackStrategy({
     clientID: clientID,
     clientSecret: clientSecret,
-    callbackURL: callbackURL,
+    callbackURL: appURL + '/auth/slack/callback',
     scope: 'commands chat:write:bot',
     skipUserProfile: true
   },
