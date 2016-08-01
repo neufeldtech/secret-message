@@ -1,0 +1,35 @@
+{
+  "name": "secret-message",
+  "scripts": {
+  },
+  "env": {
+    "APP_URL": {
+      "required": true
+    },
+    "SLACK_CALLBACK_URL": {
+      "required": true
+    },
+    "SLACK_CLIENT_ID": {
+      "required": true
+    },
+    "SLACK_CLIENT_SECRET": {
+      "required": true
+    },
+    "SLACK_VERIFICATION_TOKEN": {
+      "required": true
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1
+    }
+  },
+  "addons": [
+    "heroku-redis"
+  ],
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    }
+  ]
+}
