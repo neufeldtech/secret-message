@@ -24,7 +24,7 @@ module.exports = function() {
     if (process.env.NODE_ENV === 'test') {
       return Buffer.from("7a7583514e7a070b8ca16051cf627122", "hex")
     } else {
-      return crypto.randomBytes(this.ivLength)
+      return crypto.randomBytes(length)
     }
   }
   service.encrypt = function(password, text) {
