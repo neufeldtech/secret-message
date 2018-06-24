@@ -17,7 +17,7 @@ module.exports = function(client) {
 
   service.set = function(key, value, callback) {
     var hashedKey = sha256(key);
-    var encryptedValue = cryptoService.encrypt(key, value);
+    var encryptedValue = cryptoService.encryptIV(value);
     client.set(hashedKey, encryptedValue, function(err, reply) {
       if (err) {
         callback("Error setting redis key: " + err);

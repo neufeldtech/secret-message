@@ -9,22 +9,22 @@
   "dependencies": {
     "body-parser": "^1.15.2",
     "crypto": "0.0.3",
-    "express": "^3.0.6",
+    "express": "^4.16.3",
     "ioredis": "^2.2.0",
     "passport": "^0.3.2",
     "passport-slack": "0.0.6",
-    "request": "^2.72.0",
+    "request": "^2.87.0",
     "sha256": "^0.2.0",
     "shortid": "^2.2.6"
   },
   "scripts": {
-    "test": "NODE_ENV=test; mocha --timeout 5000 ./test/*.test.js",
-    "coverage": "./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha ./test/*.test.js",
-    "growl": "DEBUG=app ./node_modules/mocha/bin/mocha --timeout 5000 -G --reporter nyan -w ./test/*.test.js"
+    "test": "NODE_ENV=test mocha --timeout 5000 --exit ./test/*.test.js",
+    "coverage": "NODE_ENV=test ./node_modules/.bin/nyc ./node_modules/mocha/bin/mocha --exit",
+    "growl": "NODE_ENV=test ./node_modules/mocha/bin/mocha --timeout 5000 --reporter nyan -w ./test/*.test.js"
   },
   "engines": {
-    "node": "6.2.x",
-    "npm": "3.9.x"
+    "node": "^8.11.0",
+    "npm": "^6.1.0"
   },
   "devDependencies": {
     "chai": "^3.5.0",
@@ -32,11 +32,11 @@
     "eslint-config-google": "^0.6.0",
     "growl": "^1.9.2",
     "istanbul": "^0.4.4",
-    "mocha": "^2.5.3",
-    "nock": "^8.0.0",
+    "mocha": "^5.2.0",
+    "nock": "^9.3.3",
+    "nyc": "^12.0.2",
     "redis-mock": "^0.9.0",
     "sinon": "^1.17.4",
-    "supertest": "^1.2.0",
-    "surge": "^0.18.0"
+    "supertest": "^3.1.0"
   }
 }
