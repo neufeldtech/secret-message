@@ -23,8 +23,8 @@
     "growl": "NODE_ENV=test ./node_modules/mocha/bin/mocha --timeout 5000 --reporter nyan -w ./test/*.test.js"
   },
   "engines": {
-    "node": "8.11.x",
-    "npm": "5.6.x"
+    "node": "^8.11.0",
+    "npm": "^6.1.0"
   },
   "devDependencies": {
     "chai": "^3.5.0",
