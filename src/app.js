@@ -10,11 +10,11 @@ var bodyParser = require('body-parser');
 var shortId = require('shortid');
 var lib = require('./lib.js');
 
-module.exports = function(app, redisService) {
-  redisService.registerConnectEvent(function(cb) {
+module.exports = function (app, redisService) {
+  redisService.registerConnectEvent(function (cb) {
     console.log(cb);
   });
-  redisService.registerErrorEvent(function(cb) {
+  redisService.registerErrorEvent(function (cb) {
     console.log(cb);
   });
 
@@ -25,13 +25,13 @@ module.exports = function(app, redisService) {
     scope: 'commands chat:write:bot',
     skipUserProfile: true
   },
-  function(accessToken, refreshToken, profile, done) {
-    done(null, 'foobar');
-  }
+    function (accessToken, refreshToken, profile, done) {
+      done(null, 'foobar');
+    }
   ));
 
-  setInterval(function() {
-    lib.wakeUp(appURL, function(err, res) {
+  setInterval(function () {
+    lib.wakeUp(appURL, function (err, res) {
       if (err) {
         debug(err);
         return;
@@ -40,32 +40,32 @@ module.exports = function(app, redisService) {
     });
   }, 300000); // every 5 minutes (300000)
 
-  app.use(bodyParser.urlencoded({extended: true}));
+  app.use(bodyParser.urlencoded({ extended: true }));
 
   app.get('/auth/slack', passport.authorize('slack'));
 
-  app.get('/auth/slack/callback', passport.authorize('slack', {failureRedirect: 'http://secretmessage.xyz/error'}), function(req, res) {
+  app.get('/auth/slack/callback', passport.authorize('slack', { failureRedirect: 'http://secretmessage.xyz/error' }), function (req, res) {
     res.redirect('http://secretmessage.xyz/success');
   });
 
-// Slack token authentication middleware
-  app.get('/', function(req, res) {
-    res.json({message: "OK"});
+  // Slack token authentication middleware
+  app.get('/', function (req, res) {
+    res.json({ message: "OK" });
   });
 
-  app.post('/secret/set', function(req, res) {
+  app.post('/slash', function (req, res) {
     var body = req.body;
     if (body.token === verificationToken) {
-      res.end(null, function(err) { // send a 200 response
+      res.end(null, function (err) { // send a 200 response
         var secretId = shortId.generate();
-        lib.sendSecret(body.response_url, body.user_name, body.text, secretId, function(err, res) {
+        lib.sendSecret(body.response_url, body.user_name, body.text, secretId, function (err, res) {
           if (err) {
             console.log(err);
             return;
           }
           return;
         }); // execute the action
-        redisService.set(secretId, body.text, function(err, res) {
+        redisService.set(secretId, body.text, function (err, res) {
           if (err) {
             console.log(err);
             return;
@@ -82,36 +82,59 @@ module.exports = function(app, redisService) {
     }
   });
 
-  app.post('/secret/get', function(req, res) {
+  app.post('/interactive', function (req, res) {
     var payload = lib.safelyParseJson(req.body.payload);
     if (payload && payload.token === verificationToken) {
-      // debug(payload);
-      var secretId = payload.callback_id;
-      redisService.get(secretId, function(err, reply) {
-        var secret = "";
-        if (err || !reply) {
-          debug('error retrieving key from redis: ' + err);
-          res.json({
-            delete_original: true,
-            text: "ERROR: Secret not found",
-            response_type: "ephemeral"
-          });
-        } else {
-          secret = reply;
-          res.json({
-            delete_original: true,
-            text: secret,
-            response_type: "ephemeral"
-          });
-        }
-      });
-      redisService.del(secretId, function(err, reply) {
-        if (err) {
-          console.log(err);
+      console.log(payload);
+      if (/^send_secret\:/.test(payload.callback_id)) {
+        var secretId = payload.callback_id.split('send_secret:')[1];
+        redisService.get(secretId, function (err, reply) {
+          var secret = "";
+          if (err || !reply) {
+            debug('error retrieving key from redis: ' + err);
+            res.json({
+              delete_original: true,
+              text: "ERROR: Secret not found",
+              response_type: "ephemeral"
+            });
+          } else {
+            secret = reply;
+            res.json({
+              delete_original: true,
+              response_type: "ephemeral",
+              attachments: [
+                {
+                  fallback: 'Secret from ' + payload.user.name + ':',
+                  title: 'Secret from ' + payload.user.name + ':',
+                  text: secret,
+                  callback_id: 'delete_secret:',
+                  color: "#FF0000",
+                  attachment_type: "default",
+                  actions: [
+                    {
+                      name: "removeMessage",
+                      text: "Delete message now",
+                      type: "button",
+                      value: "removeMessage"
+                    }
+                  ]
+                }
+              ]
+            });
+          }
+        });
+        redisService.del(secretId, function (err, reply) {
+          if (err) {
+            console.log(err);
+            return;
+          }
           return;
-        }
-        return;
-      });
+        });
+      } else {
+        res.json({
+          delete_original: true
+        })
+      }
     } else {
       debug('Null Payload or Failed token verification.');
       debug('Expected token: ' + verificationToken);

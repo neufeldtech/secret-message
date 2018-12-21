@@ -35,7 +35,7 @@ module.exports = {
         {
           fallback: username + " sent a secret message",
           title: username + " sent a secret message:",
-          callback_id: secretId,
+          callback_id: 'send_secret:' + secretId,
           color: "#6D5692",
           attachment_type: "default",
           actions: [
