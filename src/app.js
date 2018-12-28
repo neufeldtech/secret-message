@@ -85,7 +85,6 @@ module.exports = function (app, redisService) {
   app.post('/interactive', function (req, res) {
     var payload = lib.safelyParseJson(req.body.payload);
     if (payload && payload.token === verificationToken) {
-      console.log(payload);
       if (/^send_secret\:/.test(payload.callback_id)) {
         var secretId = payload.callback_id.split('send_secret:')[1];
         redisService.get(secretId, function (err, reply) {
@@ -94,8 +93,19 @@ module.exports = function (app, redisService) {
             debug('error retrieving key from redis: ' + err);
             res.json({
               delete_original: true,
-              text: "ERROR: Secret not found",
-              response_type: "ephemeral"
+              response_type: "ephemeral",
+              attachments: [
+                {
+                  fallback: "Error: message not found",
+                  title: "Error: Message not found ",
+                  text: "The secret with id " + secretId + " could not be retrieved.",
+                  footer: "Please contact support@secretmessage.xyz if you require further assistance.",
+                  callback_id: 'msg_not_found:',
+                  color: "#FF0000",
+                  attachment_type: "default"
+                }
+              ]
+              
             });
           } else {
             secret = reply;
@@ -107,14 +117,17 @@ module.exports = function (app, redisService) {
                   fallback: 'Secret from ' + payload.user.name + ':',
                   title: 'Secret from ' + payload.user.name + ':',
                   text: secret,
+                  footer: "The above message is only visible to you and will disappear when your Slack client reloads. To remove it immediately, click the button below:",
+                  mrkdwn: false,
                   callback_id: 'delete_secret:',
-                  color: "#FF0000",
+                  color: "#6D5692",
                   attachment_type: "default",
                   actions: [
                     {
                       name: "removeMessage",
-                      text: "Delete message now",
+                      text: ":x: Delete message",
                       type: "button",
+                      style: "danger",
                       value: "removeMessage"
                     }
                   ]

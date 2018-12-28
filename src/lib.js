@@ -41,7 +41,7 @@ module.exports = {
           actions: [
             {
               name: "readMessage",
-              text: "View message",
+              text: ":envelope: Read message",
               type: "button",
               value: "readMessage"
             }
