@@ -53,7 +53,7 @@ module.exports = function (app, redisService) {
     res.json({ message: "OK" });
   });
 
-  app.post('/slash', function (req, res) {
+  app.post(/(\/secret\/set|\/slash)/, function (req, res) {
     var body = req.body;
     if (body.token === verificationToken) {
       res.end(null, function (err) { // send a 200 response
@@ -82,7 +82,7 @@ module.exports = function (app, redisService) {
     }
   });
 
-  app.post('/interactive', function (req, res) {
+  app.post(/(\/secret\/get|\/interactive)/, function (req, res) {
     var payload = lib.safelyParseJson(req.body.payload);
     if (payload && payload.token === verificationToken) {
       if (/^send_secret\:/.test(payload.callback_id)) {
