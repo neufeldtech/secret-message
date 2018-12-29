@@ -141,8 +141,8 @@ module.exports = function (app, redisService) {
               response_type: "ephemeral",
               attachments: [
                 {
-                  fallback: 'Secret from ' + payload.user.name + ':',
-                  title: 'Secret from ' + payload.user.name + ':',
+                  fallback: 'Secret message',
+                  title: 'Secret message:',
                   text: secret,
                   footer: "The above message is only visible to you and will disappear when your Slack client reloads. To remove it immediately, click the button below:",
                   mrkdwn: false,
