@@ -85,8 +85,13 @@ module.exports = function (app, redisService) {
   app.post(/(\/secret\/get|\/interactive)/, function (req, res) {
     var payload = lib.safelyParseJson(req.body.payload);
     if (payload && payload.token === verificationToken) {
-      if (/^send_secret\:/.test(payload.callback_id)) {
-        var secretId = payload.callback_id.split('send_secret:')[1];
+      if (/^delete_secret\:/.test(payload.callback_id)) {
+        res.json({
+          delete_original: true
+        })
+      } else {
+        // Support legacy (unnamed) callback_id and new (named) callback_id
+        var secretId = payload.callback_id.replace(/^send_secret\:/, '');
         redisService.get(secretId, function (err, reply) {
           var secret = "";
           if (err || !reply) {
@@ -105,7 +110,7 @@ module.exports = function (app, redisService) {
                   attachment_type: "default"
                 }
               ]
-              
+
             });
           } else {
             secret = reply;
@@ -143,10 +148,6 @@ module.exports = function (app, redisService) {
           }
           return;
         });
-      } else {
-        res.json({
-          delete_original: true
-        })
       }
     } else {
       debug('Null Payload or Failed token verification.');

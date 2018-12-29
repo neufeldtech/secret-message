@@ -81,7 +81,7 @@ describe('Route /interactive', function() {
     supertest = require('supertest')(app);
     nock.enableNetConnect();
     nock.cleanAll();
-
+    
     redisService.flushall(function(err, reply) {
       if (err) {
         return;
@@ -93,59 +93,96 @@ describe('Route /interactive', function() {
       });
     });
   });
-
-  it('should respond with secret message if secret was found', function(done) {
-    var body = { payload: '{"type":"interactive_message","actions":[{"name":"readMessage","type":"button","value":"readMessage"}],"callback_id":"send_secret:12345abcde","team":{"id":"T0BCJDZ8Q","domain":"neufeldtech"},"channel":{"id":"C0BCEGD6X","name":"general"},"user":{"id":"U0BCH4N2K","name":"jordan.neufeld"},"action_ts":"1546054509.087249","message_ts":"1546054493.016100","attachment_id":"1","token":"foobar","is_app_unfurl":false,"original_message":{"type":"message","subtype":"bot_message","text":"","ts":"1546054493.016100","bot_id":"B1X6K0MPY","attachments":[{"callback_id":"send_secret:SyLvsPEWN","fallback":"jordan.neufeld sent a secret message","title":"jordan.neufeld sent a secret message:","id":1,"color":"6D5692","actions":[{"id":"1","name":"readMessage","text":":envelope: Read message","type":"button","value":"readMessage","style":""}]}]},"response_url":"https:\\/\\/hooks.slack.com\\/actions\\/T0BCJDZ8Q\\/513307572131\\/PhmVvFrJ9QxqucGvvt0lSwe6","trigger_id":"512676218880.11426475296.d3abdbf2859e819410b428dc5a48dbb0"}' }
-    supertest.post('/interactive')
+  
+  context('backwards compatibility', function() {
+    it('should respond with secret message if secret was found', function(done) {
+      var body = { payload: '{"type":"interactive_message","actions":[{"name":"readMessage","type":"button","value":"readMessage"}],"callback_id":"12345abcde","team":{"id":"T0BCJDZ8Q","domain":"neufeldtech"},"channel":{"id":"C0BCEGD6X","name":"general"},"user":{"id":"U0BCH4N2K","name":"jordan.neufeld"},"action_ts":"1546054509.087249","message_ts":"1546054493.016100","attachment_id":"1","token":"foobar","is_app_unfurl":false,"original_message":{"type":"message","subtype":"bot_message","text":"","ts":"1546054493.016100","bot_id":"B1X6K0MPY","attachments":[{"callback_id":"send_secret:SyLvsPEWN","fallback":"jordan.neufeld sent a secret message","title":"jordan.neufeld sent a secret message:","id":1,"color":"6D5692","actions":[{"id":"1","name":"readMessage","text":":envelope: Read message","type":"button","value":"readMessage","style":""}]}]},"response_url":"https:\\/\\/hooks.slack.com\\/actions\\/T0BCJDZ8Q\\/513307572131\\/PhmVvFrJ9QxqucGvvt0lSwe6","trigger_id":"512676218880.11426475296.d3abdbf2859e819410b428dc5a48dbb0"}' }
+      supertest.post('/interactive')
+        .type('form')
+        .send(querystring.stringify(body))
+        .expect({
+          delete_original: true,
+          "response_type": 'ephemeral',
+          "attachments": [
+            {
+              "fallback": 'Secret from jordan.neufeld:',
+              "title": 'Secret from jordan.neufeld:',
+              "text": 'baseball123',
+              "footer": 'The above message is only visible to you and will disappear when your Slack client reloads. To remove it immediately, click the button below:',
+              "mrkdwn": false,
+              "callback_id": 'delete_secret:',
+              "color": '#6D5692',
+              "attachment_type": 'default',
+              "actions": [
+                {
+                  "name": "removeMessage",
+                  "style": "danger",
+                  "text": ":x: Delete message",
+                  "type": "button",
+                  "value": "removeMessage",
+                }
+              ]
+            }
+          ]
+        })
+        .expect(200, done);
+    });
+  })
+  context('standard API', function() {
+    it('should respond with secret message if secret was found', function(done) {
+      var body = { payload: '{"type":"interactive_message","actions":[{"name":"readMessage","type":"button","value":"readMessage"}],"callback_id":"send_secret:12345abcde","team":{"id":"T0BCJDZ8Q","domain":"neufeldtech"},"channel":{"id":"C0BCEGD6X","name":"general"},"user":{"id":"U0BCH4N2K","name":"jordan.neufeld"},"action_ts":"1546054509.087249","message_ts":"1546054493.016100","attachment_id":"1","token":"foobar","is_app_unfurl":false,"original_message":{"type":"message","subtype":"bot_message","text":"","ts":"1546054493.016100","bot_id":"B1X6K0MPY","attachments":[{"callback_id":"send_secret:SyLvsPEWN","fallback":"jordan.neufeld sent a secret message","title":"jordan.neufeld sent a secret message:","id":1,"color":"6D5692","actions":[{"id":"1","name":"readMessage","text":":envelope: Read message","type":"button","value":"readMessage","style":""}]}]},"response_url":"https:\\/\\/hooks.slack.com\\/actions\\/T0BCJDZ8Q\\/513307572131\\/PhmVvFrJ9QxqucGvvt0lSwe6","trigger_id":"512676218880.11426475296.d3abdbf2859e819410b428dc5a48dbb0"}' }
+      supertest.post('/interactive')
+        .type('form')
+        .send(querystring.stringify(body))
+        .expect({
+          delete_original: true,
+          "response_type": 'ephemeral',
+          "attachments": [
+            {
+              "fallback": 'Secret from jordan.neufeld:',
+              "title": 'Secret from jordan.neufeld:',
+              "text": 'baseball123',
+              "footer": 'The above message is only visible to you and will disappear when your Slack client reloads. To remove it immediately, click the button below:',
+              "mrkdwn": false,
+              "callback_id": 'delete_secret:',
+              "color": '#6D5692',
+              "attachment_type": 'default',
+              "actions": [
+                {
+                  "name": "removeMessage",
+                  "style": "danger",
+                  "text": ":x: Delete message",
+                  "type": "button",
+                  "value": "removeMessage",
+                }
+              ]
+            }
+          ]
+        })
+        .expect(200, done);
+    });
+    it('should respond with "secret not found" if secret was not found', function(done) {
+      var body = { payload: '{"type":"interactive_message","actions":[{"name":"readMessage","type":"button","value":"readMessage"}],"callback_id":"send_secret:bad_id","team":{"id":"T0BCJDZ8Q","domain":"neufeldtech"},"channel":{"id":"C0BCEGD6X","name":"general"},"user":{"id":"U0BCH4N2K","name":"jordan.neufeld"},"action_ts":"1546054509.087249","message_ts":"1546054493.016100","attachment_id":"1","token":"foobar","is_app_unfurl":false,"original_message":{"type":"message","subtype":"bot_message","text":"","ts":"1546054493.016100","bot_id":"B1X6K0MPY","attachments":[{"callback_id":"send_secret:SyLvsPEWN","fallback":"jordan.neufeld sent a secret message","title":"jordan.neufeld sent a secret message:","id":1,"color":"6D5692","actions":[{"id":"1","name":"readMessage","text":":envelope: Read message","type":"button","value":"readMessage","style":""}]}]},"response_url":"https:\\/\\/hooks.slack.com\\/actions\\/T0BCJDZ8Q\\/513307572131\\/PhmVvFrJ9QxqucGvvt0lSwe6","trigger_id":"512676218880.11426475296.d3abdbf2859e819410b428dc5a48dbb0"}' }
+      supertest.post('/interactive')
       .type('form')
       .send(querystring.stringify(body))
-      .expect({
-        delete_original: true,
-        "response_type": 'ephemeral',
-        "attachments": [
-          {
-            "fallback": 'Secret from jordan.neufeld:',
-            "title": 'Secret from jordan.neufeld:',
-            "text": 'baseball123',
-            "footer": 'The above message is only visible to you and will disappear when your Slack client reloads. To remove it immediately, click the button below:',
-            "mrkdwn": false,
-            "callback_id": 'delete_secret:',
-            "color": '#6D5692',
-            "attachment_type": 'default',
-            "actions": [
-              {
-                "name": "removeMessage",
-                "style": "danger",
-                "text": ":x: Delete message",
-                "type": "button",
-                "value": "removeMessage",
-              }
-            ]
-          }
-        ]
-      })
-      .expect(200, done);
-  });
-  it('should respond with "secret not found" if secret was not found', function(done) {
-    var body = { payload: '{"type":"interactive_message","actions":[{"name":"readMessage","type":"button","value":"readMessage"}],"callback_id":"send_secret:bad_id","team":{"id":"T0BCJDZ8Q","domain":"neufeldtech"},"channel":{"id":"C0BCEGD6X","name":"general"},"user":{"id":"U0BCH4N2K","name":"jordan.neufeld"},"action_ts":"1546054509.087249","message_ts":"1546054493.016100","attachment_id":"1","token":"foobar","is_app_unfurl":false,"original_message":{"type":"message","subtype":"bot_message","text":"","ts":"1546054493.016100","bot_id":"B1X6K0MPY","attachments":[{"callback_id":"send_secret:SyLvsPEWN","fallback":"jordan.neufeld sent a secret message","title":"jordan.neufeld sent a secret message:","id":1,"color":"6D5692","actions":[{"id":"1","name":"readMessage","text":":envelope: Read message","type":"button","value":"readMessage","style":""}]}]},"response_url":"https:\\/\\/hooks.slack.com\\/actions\\/T0BCJDZ8Q\\/513307572131\\/PhmVvFrJ9QxqucGvvt0lSwe6","trigger_id":"512676218880.11426475296.d3abdbf2859e819410b428dc5a48dbb0"}' }
-    supertest.post('/interactive')
-    .type('form')
-    .send(querystring.stringify(body))
-      .expect({
-        "delete_original": true,
-        "response_type": 'ephemeral',
-        "attachments": [
-          {
-            "fallback": "Error: message not found",
-            "title": "Error: Message not found",
-            "text": "The secret with id bad_id could not be retrieved.",
-            "attachment_type": "default",
-            "footer": "Please contact support@secretmessage.xyz if you require further assistance.",
-            "callback_id": "msg_not_found:",
-            "color": "#FF0000",
-          }
-        ]
-      })
-      .expect(200, done);
-  });
+        .expect({
+          "delete_original": true,
+          "response_type": 'ephemeral',
+          "attachments": [
+            {
+              "fallback": "Error: message not found",
+              "title": "Error: Message not found",
+              "text": "The secret with id bad_id could not be retrieved.",
+              "attachment_type": "default",
+              "footer": "Please contact support@secretmessage.xyz if you require further assistance.",
+              "callback_id": "msg_not_found:",
+              "color": "#FF0000",
+            }
+          ]
+        })
+        .expect(200, done);
+    });
+
+  })
 });
