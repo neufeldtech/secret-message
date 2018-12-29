@@ -105,8 +105,8 @@ describe('Route /interactive', function() {
           "response_type": 'ephemeral',
           "attachments": [
             {
-              "fallback": 'Secret from jordan.neufeld:',
-              "title": 'Secret from jordan.neufeld:',
+              "fallback": 'Secret message',
+              "title": 'Secret message:',
               "text": 'baseball123',
               "footer": 'The above message is only visible to you and will disappear when your Slack client reloads. To remove it immediately, click the button below:',
               "mrkdwn": false,
@@ -139,8 +139,8 @@ describe('Route /interactive', function() {
           "response_type": 'ephemeral',
           "attachments": [
             {
-              "fallback": 'Secret from jordan.neufeld:',
-              "title": 'Secret from jordan.neufeld:',
+              "fallback": 'Secret message',
+              "title": 'Secret message:',
               "text": 'baseball123',
               "footer": 'The above message is only visible to you and will disappear when your Slack client reloads. To remove it immediately, click the button below:',
               "mrkdwn": false,
