@@ -61,7 +61,7 @@ module.exports = function (app, redisService) {
       } else {
         res.end(null, function (err) { // send a 200 response
           if (body.text.length < 1) {
-            lib.sendErrorMessage(body.response_url, ':x: Error: Secret cannot be empty. You can send a secret like this: `/secret The password is hunter2`', function(err, res){
+            lib.sendErrorMessage(body.response_url, ':x: *Error:* Secret cannot be empty. You can send a secret like this: `/secret The password is hunter2`', function(err, res){
               if (err) {
                 console.log(err);
                 return;
