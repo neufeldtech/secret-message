@@ -175,7 +175,6 @@ describe('Route /interactive', function() {
               "title": "Error: Message not found",
               "text": "The secret with id bad_id could not be retrieved.",
               "attachment_type": "default",
-              "footer": "Please contact support@secretmessage.xyz if you require further assistance.",
               "callback_id": "msg_not_found:",
               "color": "#FF0000",
             }

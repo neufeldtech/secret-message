@@ -104,7 +104,6 @@ module.exports = function (app, redisService) {
                   fallback: "Error: message not found",
                   title: "Error: Message not found",
                   text: "The secret with id " + secretId + " could not be retrieved.",
-                  footer: "Please contact support@secretmessage.xyz if you require further assistance.",
                   callback_id: 'msg_not_found:',
                   color: "#FF0000",
                   attachment_type: "default"
