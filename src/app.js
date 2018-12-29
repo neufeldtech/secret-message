@@ -61,7 +61,17 @@ module.exports = function (app, redisService) {
       } else {
         res.end(null, function (err) { // send a 200 response
           if (body.text.length < 1) {
-            lib.sendErrorMessage(body.response_url, ':x: *Error:* Secret cannot be empty. You can send a secret like this: `/secret The password is hunter2`', function(err, res){
+            var attachments = [
+              {
+                fallback: "Error: Secret text is empty",
+                title: "Error: Secret text is empty",
+                text: "It looks like you tried to send a secret but forgot to provide the secret's text. You can send a secret like this: `/secret The password is hunter2`",
+                callback_id: 'secret_text_empty:',
+                color: "#FF0000",
+                attachment_type: "default"
+              }
+            ]
+            lib.sendErrorMessage(body.response_url, null, attachments, function(err, res){
               if (err) {
                 console.log(err);
                 return;

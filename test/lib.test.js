@@ -72,7 +72,7 @@ describe("send error message to slack channel", function () {
       .reply(200, "wee")
   });
   it("should return 200", function(done){
-    lib.sendErrorMessage('https://hooks.slack.com/sendSecret', 'this is an error message', function(err, res){
+    lib.sendErrorMessage('https://hooks.slack.com/sendSecret', 'this is an error message', [], function(err, res){
       res.should.equal(200);
       done()
     })

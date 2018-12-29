@@ -66,10 +66,11 @@ module.exports = {
     }
     );
   },
-  sendErrorMessage: function(responseUrl, text, callback) {
+  sendErrorMessage: function(responseUrl, text, attachments, callback) {
     var message = {
       response_type: "ephemeral",
-      text: text
+      text: text,
+      attachments: attachments
     };
     request(
       {
