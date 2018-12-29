@@ -58,7 +58,7 @@ module.exports = function (app, redisService) {
     if (body.token === verificationToken) {
       res.end(null, function (err) { // send a 200 response
         var secretId = shortId.generate();
-        lib.sendSecret(body.response_url, body.user_name, body.text, secretId, function (err, res) {
+        lib.sendSecret(body.response_url, body.user_name, secretId, function (err, res) {
           if (err) {
             console.log(err);
             return;

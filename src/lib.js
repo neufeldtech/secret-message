@@ -28,7 +28,7 @@ module.exports = {
     }
     return parsed;
   },
-  sendSecret: function(responseUrl, username, text, secretId, callback) {
+  sendSecret: function(responseUrl, username, secretId, callback) {
     var message = {
       response_type: "in_channel",
       attachments: [

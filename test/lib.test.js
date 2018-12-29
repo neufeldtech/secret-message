@@ -50,13 +50,13 @@ describe("send secret button to Slack channel", function() {
       .replyWithError("it was me");
   });
   it("should return 200", function(done) {
-    lib.sendSecret('https://hooks.slack.com/sendSecret', 'jordan.neufeld', 'This is the secret', 'a1B2c3D4', function(err, res) {
+    lib.sendSecret('https://hooks.slack.com/sendSecret', 'jordan.neufeld', 'a1B2c3D4', function(err, res) {
       res.should.equal(200);
       done();
     });
   });
   it("should handle errors gracefully", function(done) {
-    lib.sendSecret('https://hooks.slack.com/error', 'jordan.neufeld', 'This is the secret', 'a1B2c3D4', function(err, res) {
+    lib.sendSecret('https://hooks.slack.com/error', 'jordan.neufeld', 'a1B2c3D4', function(err, res) {
       debug(err);
       err.should.equal('Error posting secret button to slack Error: it was me');
       done();
