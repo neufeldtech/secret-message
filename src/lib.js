@@ -65,5 +65,27 @@ module.exports = {
       return;
     }
     );
+  },
+  sendErrorMessage: function(responseUrl, text, callback) {
+    var message = {
+      response_type: "ephemeral",
+      text: text
+    };
+    request(
+      {
+        method: 'post',
+        uri: responseUrl,
+        json: true,
+        body: message
+      }
+    , function(error, response, body) {
+      if (error) {
+        callback("Error posting error message to slack " + error);
+        return;
+      }
+      callback(null, response.statusCode);
+      return;
+    }
+    );
   }
 };

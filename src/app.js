@@ -56,23 +56,36 @@ module.exports = function (app, redisService) {
   app.post(/(\/secret\/set|\/slash)/, function (req, res) {
     var body = req.body;
     if (body.token === verificationToken) {
-      res.end(null, function (err) { // send a 200 response
-        var secretId = shortId.generate();
-        lib.sendSecret(body.response_url, body.user_name, secretId, function (err, res) {
-          if (err) {
-            console.log(err);
+      if (body.ssl_check == '1') {
+        return res.end(null)
+      } else {
+        res.end(null, function (err) { // send a 200 response
+          if (body.text.length < 1) {
+            lib.sendErrorMessage(body.response_url, ':x: Error: Secret cannot be empty. You can send a secret like this: `/secret The password is hunter2`', function(err, res){
+              if (err) {
+                console.log(err);
+                return;
+              }
+            })
             return;
           }
-          return;
-        }); // execute the action
-        redisService.set(secretId, body.text, function (err, res) {
-          if (err) {
-            console.log(err);
+          var secretId = shortId.generate();
+          lib.sendSecret(body.response_url, body.user_name, secretId, function (err, res) {
+            if (err) {
+              console.log(err);
+              return;
+            }
             return;
-          }
-          return;
+          }); // execute the action
+          redisService.set(secretId, body.text, function (err, res) {
+            if (err) {
+              console.log(err);
+              return;
+            }
+            return;
+          });
         });
-      });
+      }
     } else {
       debug('Failed token verification.');
       debug('Expected token: ' + verificationToken);
