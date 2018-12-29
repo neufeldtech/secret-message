@@ -76,7 +76,7 @@ module.exports = function (app, redisService) {
     } else {
       debug('Failed token verification.');
       debug('Expected token: ' + verificationToken);
-      debug('Received token: ' + req.body.token);
+      debug('Received token: ' + req.body);
       res.status(403).end(null);
       return;
     }
@@ -152,7 +152,7 @@ module.exports = function (app, redisService) {
     } else {
       debug('Null Payload or Failed token verification.');
       debug('Expected token: ' + verificationToken);
-      debug('Received token: ' + payload.token);
+      debug('Received payload: ' + payload);
       res.status(403).end(null);
       return;
     }
