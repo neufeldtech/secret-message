@@ -28,20 +28,20 @@ module.exports = {
     }
     return parsed;
   },
-  sendSecret: function(responseUrl, username, text, secretId, callback) {
+  sendSecret: function(responseUrl, username, secretId, callback) {
     var message = {
       response_type: "in_channel",
       attachments: [
         {
           fallback: username + " sent a secret message",
           title: username + " sent a secret message:",
-          callback_id: secretId,
+          callback_id: 'send_secret:' + secretId,
           color: "#6D5692",
           attachment_type: "default",
           actions: [
             {
               name: "readMessage",
-              text: "View message",
+              text: ":envelope: Read message",
               type: "button",
               value: "readMessage"
             }
@@ -59,6 +59,29 @@ module.exports = {
     , function(error, response, body) {
       if (error) {
         callback("Error posting secret button to slack " + error);
+        return;
+      }
+      callback(null, response.statusCode);
+      return;
+    }
+    );
+  },
+  sendErrorMessage: function(responseUrl, text, attachments, callback) {
+    var message = {
+      response_type: "ephemeral",
+      text: text,
+      attachments: attachments
+    };
+    request(
+      {
+        method: 'post',
+        uri: responseUrl,
+        json: true,
+        body: message
+      }
+    , function(error, response, body) {
+      if (error) {
+        callback("Error posting error message to slack " + error);
         return;
       }
       callback(null, response.statusCode);
