@@ -65,7 +65,7 @@ module.exports = function (app, redisService) {
               {
                 fallback: "Error: Secret text is empty",
                 title: "Error: Secret text is empty",
-                text: "It looks like you tried to send a secret but forgot to provide the secret's text. You can send a secret like this: `/secret The password is hunter2`",
+                text: "It looks like you tried to send a secret but forgot to provide the secret's text. You can send a secret like this: `/secret I am scared of heights`",
                 callback_id: 'secret_text_empty:',
                 color: "#FF0000",
                 attachment_type: "default"
