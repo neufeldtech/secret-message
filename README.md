@@ -1,7 +1,7 @@
 # Secret Message
 [![Build Status](https://travis-ci.org/neufeldtech/secret-message.svg?branch=master)](https://travis-ci.org/neufeldtech/secret-message)
 
- Send self-destructing secret messages through Slack
+ Send one-way messages through Slack
 
 
 ## Send a secret message
