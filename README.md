@@ -1,11 +1,11 @@
 # Secret Message
 [![Build Status](https://travis-ci.org/neufeldtech/secret-message.svg?branch=master)](https://travis-ci.org/neufeldtech/secret-message)
 
- Send self-destructing secret messages through Slack
+ Send one-way messages through Slack
 
 
 ## Send a secret message
-Just type /secret and your message, such as ```/secret The password is p@ssw0rd```
+Just type /secret and your message, such as ```/secret I'm scared of heights```
 
 <img src="https://raw.githubusercontent.com/neufeldtech/secret-message/master/html2/images/slacksecret_640_3.gif" alt="Send a secret message" width="450px" />
 
