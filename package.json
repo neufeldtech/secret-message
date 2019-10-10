@@ -13,6 +13,7 @@
     "ioredis": "^2.2.0",
     "passport": "^0.3.2",
     "passport-slack": "0.0.6",
+    "prom-client": "^11.5.3",
     "request": "^2.87.0",
     "sha256": "^0.2.0",
     "shortid": "^2.2.6"
