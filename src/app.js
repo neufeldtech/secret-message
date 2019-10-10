@@ -9,7 +9,15 @@ var debug = require('debug')('app');
 var bodyParser = require('body-parser');
 var shortId = require('shortid');
 var lib = require('./lib.js');
-
+const client = require('prom-client');
+const secretCreatedCounter = new client.Counter({
+  name: 'secrets_created',
+  help: 'Number of secrets created in storage'
+});
+const secretRetrievedCounter = new client.Counter({
+  name: 'secrets_retrieved',
+  help: 'Number of secrets retrieved from storage'
+});
 module.exports = function(app, redisService) {
   redisService.registerConnectEvent(function(cb) {
     console.log(cb);
@@ -53,49 +61,56 @@ module.exports = function(app, redisService) {
     res.json({message: "OK"});
   });
 
-  app.post(/(\/secret\/set|\/slash)/, function (req, res) {
+  app.get('/prometheus', function(req, res) {
+    if (process.env.PROM_TOKEN && (req.query.token === process.env.PROM_TOKEN)) {
+      return res.end(client.register.metrics());
+    }
+    return res.status(403).end(null);
+  });
+
+  app.post(/(\/secret\/set|\/slash)/, function(req, res) {
     var body = req.body;
     if (body.token === verificationToken) {
       if (body.ssl_check == '1') {
-        return res.end(null)
-      } 
-        res.end(null, function (err) { // send a 200 response
-          if (body.text.length < 1) {
-            var attachments = [
-              {
-                fallback: "Error: Secret text is empty",
-                title: "Error: Secret text is empty",
-                text: "It looks like you tried to send a secret but forgot to provide the secret's text. You can send a secret like this: `/secret I am scared of heights`",
-                callback_id: 'secret_text_empty:',
-                color: "#FF0000",
-                attachment_type: "default"
-              }
-            ]
-            lib.sendErrorMessage(body.response_url, null, attachments, function(err, res){
-              if (err) {
-                console.log(err);
-                return;
-              }
-            })
+        return res.end(null);
+      }
+      res.end(null, function(_err) { // send a 200 response
+        if (body.text.length < 1) {
+          var attachments = [
+            {
+              fallback: "Error: Secret text is empty",
+              title: "Error: Secret text is empty",
+              text: "It looks like you tried to send a secret but forgot to provide the secret's text. You can send a secret like this: `/secret I am scared of heights`",
+              callback_id: 'secret_text_empty:',
+              color: "#FF0000",
+              attachment_type: "default"
+            }
+          ];
+          lib.sendErrorMessage(body.response_url, null, attachments, function(err, res) {
+            if (err) {
+              console.log(err);
+              return;
+            }
+          });
+          return;
+        }
+        var secretId = shortId.generate();
+        lib.sendSecret(body.response_url, body.user_name, secretId, function(err, res) {
+          if (err) {
+            console.log(err);
             return;
           }
-          var secretId = shortId.generate();
-          lib.sendSecret(body.response_url, body.user_name, secretId, function (err, res) {
-            if (err) {
-              console.log(err);
-              return;
-            }
+          return;
+        }); // execute the action
+        redisService.set(secretId, body.text, function(err, res) {
+          if (err) {
+            console.log(err);
             return;
-          }); // execute the action
-          redisService.set(secretId, body.text, function (err, res) {
-            if (err) {
-              console.log(err);
-              return;
-            }
-            return;
-          });
+          }
+          secretCreatedCounter.inc();
+          return;
         });
-      
+      });
     } else {
       debug('Failed token verification.');
       debug('Expected token: ' + verificationToken);
@@ -135,6 +150,7 @@ module.exports = function(app, redisService) {
 
             });
           } else {
+            secretRetrievedCounter.inc();
             secret = reply;
             res.json({
               delete_original: true,
