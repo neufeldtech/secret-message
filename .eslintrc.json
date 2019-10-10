@@ -4,7 +4,6 @@
       "mocha": true,
       "node": true
     },
-    "expr": true,
     "rules": {
       "camelcase": [2, {"properties": "never"}]
     }

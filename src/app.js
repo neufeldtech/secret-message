@@ -10,11 +10,11 @@ var bodyParser = require('body-parser');
 var shortId = require('shortid');
 var lib = require('./lib.js');
 
-module.exports = function (app, redisService) {
-  redisService.registerConnectEvent(function (cb) {
+module.exports = function(app, redisService) {
+  redisService.registerConnectEvent(function(cb) {
     console.log(cb);
   });
-  redisService.registerErrorEvent(function (cb) {
+  redisService.registerErrorEvent(function(cb) {
     console.log(cb);
   });
 
@@ -25,13 +25,13 @@ module.exports = function (app, redisService) {
     scope: 'commands chat:write:bot',
     skipUserProfile: true
   },
-    function (accessToken, refreshToken, profile, done) {
-      done(null, 'foobar');
-    }
+  function(accessToken, refreshToken, profile, done) {
+    done(null, 'foobar');
+  }
   ));
 
-  setInterval(function () {
-    lib.wakeUp(appURL, function (err, res) {
+  setInterval(function() {
+    lib.wakeUp(appURL, function(err, res) {
       if (err) {
         debug(err);
         return;
@@ -40,17 +40,17 @@ module.exports = function (app, redisService) {
     });
   }, 300000); // every 5 minutes (300000)
 
-  app.use(bodyParser.urlencoded({ extended: true }));
+  app.use(bodyParser.urlencoded({extended: true}));
 
   app.get('/auth/slack', passport.authorize('slack'));
 
-  app.get('/auth/slack/callback', passport.authorize('slack', { failureRedirect: 'http://secretmessage.xyz/error' }), function (req, res) {
+  app.get('/auth/slack/callback', passport.authorize('slack', {failureRedirect: 'http://secretmessage.xyz/error'}), function(req, res) {
     res.redirect('http://secretmessage.xyz/success');
   });
 
   // Slack token authentication middleware
-  app.get('/', function (req, res) {
-    res.json({ message: "OK" });
+  app.get('/', function(req, res) {
+    res.json({message: "OK"});
   });
 
   app.post(/(\/secret\/set|\/slash)/, function (req, res) {
@@ -58,7 +58,7 @@ module.exports = function (app, redisService) {
     if (body.token === verificationToken) {
       if (body.ssl_check == '1') {
         return res.end(null)
-      } else {
+      } 
         res.end(null, function (err) { // send a 200 response
           if (body.text.length < 1) {
             var attachments = [
@@ -95,7 +95,7 @@ module.exports = function (app, redisService) {
             return;
           });
         });
-      }
+      
     } else {
       debug('Failed token verification.');
       debug('Expected token: ' + verificationToken);
@@ -105,17 +105,17 @@ module.exports = function (app, redisService) {
     }
   });
 
-  app.post(/(\/secret\/get|\/interactive)/, function (req, res) {
+  app.post(/(\/secret\/get|\/interactive)/, function(req, res) {
     var payload = lib.safelyParseJson(req.body.payload);
     if (payload && payload.token === verificationToken) {
       if (/^delete_secret\:/.test(payload.callback_id)) {
         res.json({
           delete_original: true
-        })
+        });
       } else {
         // Support legacy (unnamed) callback_id and new (named) callback_id
         var secretId = payload.callback_id.replace(/^send_secret\:/, '');
-        redisService.get(secretId, function (err, reply) {
+        redisService.get(secretId, function(err, reply) {
           var secret = "";
           if (err || !reply) {
             debug('error retrieving key from redis: ' + err);
@@ -163,7 +163,7 @@ module.exports = function (app, redisService) {
             });
           }
         });
-        redisService.del(secretId, function (err, reply) {
+        redisService.del(secretId, function(err, reply) {
           if (err) {
             console.log(err);
             return;
