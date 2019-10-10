@@ -8,14 +8,14 @@ module.exports = {
         method: 'get',
         uri: url
       }
-    , function(error, response, body) {
-      if (error) {
-        callback('Error calling self wakeup: ' + error);
+      , function(error, response, body) {
+        if (error) {
+          callback('Error calling self wakeup: ' + error);
+          return;
+        }
+        callback(null, response.statusCode);
         return;
       }
-      callback(null, response.statusCode);
-      return;
-    }
     );
   },
   safelyParseJson: function(json) {
@@ -56,14 +56,14 @@ module.exports = {
         json: true,
         body: message
       }
-    , function(error, response, body) {
-      if (error) {
-        callback("Error posting secret button to slack " + error);
+      , function(error, response, body) {
+        if (error) {
+          callback("Error posting secret button to slack " + error);
+          return;
+        }
+        callback(null, response.statusCode);
         return;
       }
-      callback(null, response.statusCode);
-      return;
-    }
     );
   },
   sendErrorMessage: function(responseUrl, text, attachments, callback) {
@@ -79,14 +79,14 @@ module.exports = {
         json: true,
         body: message
       }
-    , function(error, response, body) {
-      if (error) {
-        callback("Error posting error message to slack " + error);
+      , function(error, response, body) {
+        if (error) {
+          callback("Error posting error message to slack " + error);
+          return;
+        }
+        callback(null, response.statusCode);
         return;
       }
-      callback(null, response.statusCode);
-      return;
-    }
     );
   }
 };
