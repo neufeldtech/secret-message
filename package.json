@@ -10,6 +10,7 @@
     "body-parser": "^1.15.2",
     "crypto": "0.0.3",
     "express": "^4.16.3",
+    "honeycomb-beeline": "^1.8.3",
     "ioredis": "^2.2.0",
     "passport": "^0.3.2",
     "passport-slack": "0.0.6",

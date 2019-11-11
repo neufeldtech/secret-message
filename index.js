@@ -1,3 +1,9 @@
+if (process.env.HONEYCOMB_KEY && process.env.HONEYCOMB_DATASET) {
+  require("honeycomb-beeline")({
+    writeKey: process.env.HONEYCOMB_KEY,
+    dataset: process.env.HONEYCOMB_DATASET
+  });
+}
 var port = process.env.PORT || 5000;
 var redisURL = process.env.REDIS_URL || 'foobar';
 

@@ -2,14 +2,19 @@ var verificationToken = process.env.SLACK_VERIFICATION_TOKEN || 'foobar';
 var clientID = process.env.SLACK_CLIENT_ID || 'foobar';
 var clientSecret = process.env.SLACK_CLIENT_SECRET || 'foobar';
 var appURL = process.env.APP_URL || 'foobar';
-
 var passport = require('passport');
 var SlackStrategy = require('passport-slack').Strategy;
 var debug = require('debug')('app');
 var bodyParser = require('body-parser');
 var shortId = require('shortid');
 var lib = require('./lib.js');
+var sha256 = require('sha256');
 const client = require('prom-client');
+if (process.env.HONEYCOMB_KEY && process.env.HONEYCOMB_DATASET) {
+  var honey = require("honeycomb-beeline")();
+  var honeycombEnabled = true;
+}
+
 const secretCreatedCounter = new client.Counter({
   name: 'secrets_created',
   help: 'Number of secrets created in storage'
@@ -107,6 +112,11 @@ module.exports = function(app, redisService) {
             console.log(err);
             return;
           }
+          if (honeycombEnabled) {
+            honey.customContext.add("user_id_hash", sha256(body.user_id || ""));
+            honey.customContext.add("channel_id_hash", sha256(body.channel_id || ""));
+            honey.customContext.add("team_id_hash", sha256(body.team_id || ""));
+          }
           secretCreatedCounter.inc();
           return;
         });
@@ -150,6 +160,11 @@ module.exports = function(app, redisService) {
 
             });
           } else {
+            if (honeycombEnabled) {
+              honey.customContext.add("user_id_hash", sha256(payload.user.id || ""));
+              honey.customContext.add("channel_id_hash", sha256(payload.channel.id || ""));
+              honey.customContext.add("team_id_hash", sha256(payload.team.id || ""));
+            }
             secretRetrievedCounter.inc();
             secret = reply;
             res.json({
