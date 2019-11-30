@@ -10,6 +10,7 @@ var shortId = require('shortid');
 var lib = require('./lib.js');
 var sha256 = require('sha256');
 const client = require('prom-client');
+var honeycombEnabled = false;
 if (process.env.HONEYCOMB_KEY && process.env.HONEYCOMB_DATASET) {
   var honey = require("honeycomb-beeline")();
   var honeycombEnabled = true;
@@ -79,6 +80,11 @@ module.exports = function(app, redisService) {
       if (body.ssl_check == '1') {
         return res.end(null);
       }
+      if (honeycombEnabled) {
+        honey.customContext.add("user_id_hash", sha256(body.user_id || ""));
+        honey.customContext.add("channel_id_hash", sha256(body.channel_id || ""));
+        honey.customContext.add("team_id_hash", sha256(body.team_id || ""));
+      }
       res.end(null, function(_err) { // send a 200 response
         if (body.text.length < 1) {
           var attachments = [
@@ -112,11 +118,7 @@ module.exports = function(app, redisService) {
             console.log(err);
             return;
           }
-          if (honeycombEnabled) {
-            honey.customContext.add("user_id_hash", sha256(body.user_id || ""));
-            honey.customContext.add("channel_id_hash", sha256(body.channel_id || ""));
-            honey.customContext.add("team_id_hash", sha256(body.team_id || ""));
-          }
+
           secretCreatedCounter.inc();
           return;
         });
@@ -133,6 +135,11 @@ module.exports = function(app, redisService) {
   app.post(/(\/secret\/get|\/interactive)/, function(req, res) {
     var payload = lib.safelyParseJson(req.body.payload);
     if (payload && payload.token === verificationToken) {
+      if (honeycombEnabled) {
+        honey.addContext("user_id_hash", sha256(payload.user.id || ""));
+        honey.addContext("channel_id_hash", sha256(payload.channel.id || ""));
+        honey.addContext("team_id_hash", sha256(payload.team.id || ""));
+      }
       if (/^delete_secret\:/.test(payload.callback_id)) {
         res.json({
           delete_original: true
@@ -160,11 +167,6 @@ module.exports = function(app, redisService) {
 
             });
           } else {
-            if (honeycombEnabled) {
-              honey.customContext.add("user_id_hash", sha256(payload.user.id || ""));
-              honey.customContext.add("channel_id_hash", sha256(payload.channel.id || ""));
-              honey.customContext.add("team_id_hash", sha256(payload.team.id || ""));
-            }
             secretRetrievedCounter.inc();
             secret = reply;
             res.json({
