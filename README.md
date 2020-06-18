@@ -1,4 +1,9 @@
 # Secret Message
+## NOTICE
+The code for this application has moved [HERE](https://github.com/neufeldtech/secretmessage-go)
+
+---
+
 [![Build Status](https://travis-ci.org/neufeldtech/secret-message.svg?branch=master)](https://travis-ci.org/neufeldtech/secret-message)
 
  Send one-way messages through Slack
